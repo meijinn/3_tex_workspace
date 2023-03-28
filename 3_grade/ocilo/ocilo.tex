@@ -1,0 +1,146 @@
+\documentclass[10pt,a4j,dvipdfmx]{jarticle}
+%---------------------------------------------------
+\usepackage{hyperref}
+\usepackage{pxjahyper}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{amssymb,amsmath}
+\usepackage{ascmac}
+\usepackage{float}
+\usepackage{setspace}
+\usepackage[dvips,usenames]{color}
+\usepackage{colortbl}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{setspace}
+\usepackage{subfigure}
+\usepackage{here}
+\usepackage[deluxe,bold]{otf}
+\usepackage[haranoaji]{pxchfon}
+\usepackage{redeffont}
+\usepackage{listings,jvlisting} %日本語のコメントアウトをする場合jvlisting（もしくはjlisting）が必要
+\usepackage{booktabs}
+\usepackage{siunitx} %SI単位
+\usepackage{fancybox}
+%---------------------------------------------------
+% \definecolor{bl}{rgb}{0.94,0.97,1}
+% \definecolor{gr}{rgb}{0.5,0.5,0.5}
+% \makeatletter
+% \def\section{\newpage\@startsection {section}{1}{\z@}{2.3ex plus -1ex minus -.2ex}{2.3 ex plus .2ex}{\Large\bfseries}}
+% \makeatother
+%---------------------------------------------------
+\setlength{\textwidth}{160truemm}
+\setlength{\textheight}{240truemm}
+\setlength{\topmargin}{-14.5truemm}
+\setlength{\oddsidemargin}{-0.5truemm}
+\setlength{\headheight}{0truemm}
+\setlength{\parindent}{1zw}
+\setlength{\abovedisplayskip}{-2pt} % 数式上部のマージン
+\setlength{\belowdisplayskip}{-2pt} % 数式下部のマージン
+%---------------------------------------------------
+\setstretch{1.2}
+%---------------------------------------------------
+\renewcommand{\subfigtopskip}{5pt}	% 図の上の隙間。上図の副題と下図の間。
+\renewcommand{\subfigbottomskip}{0pt} % 図の下の隙間。副題と本題の間。
+\renewcommand{\subfigcapskip}{-6pt}	% 図と副題の間
+\renewcommand{\subcapsize}{\scriptsize} % 副題の文字の大きさ
+\newcommand{\mysection}[1]{\vspace{-20pt}\section{#1}}
+\newcommand{\mysubsection}[1]{\vspace{-20pt}\subsection{#1}}
+\newcommand{\mysubsubsection}[1]{\vspace{-10pt}\subsubsection{#1}}
+\renewcommand{\lstlistingname}{ソースコード}
+%---------------------------------------------------
+% ヘッダーとフッターの設定
+\usepackage{fancyhdr}
+\rhead{\leftmark}
+\chead{}
+\lhead{\rightmark}
+\cfoot{\thepage}
+
+\rfoot{}
+\begin{document}
+%---------------------------------------------------
+\setlength{\abovedisplayskip}{1.5pt} 
+\setlength{\belowdisplayskip}{0pt}
+%---------------------------------------------------
+%ここからソースコードの表示に関する設定
+\lstset{
+  basicstyle={\ttfamily},
+  identifierstyle={\small},
+  commentstyle={\smallitshape},
+  keywordstyle={\small\bfseries},
+  ndkeywordstyle={\small},
+  stringstyle={\small\ttfamily},
+  frame={tb},
+  breaklines=true,
+  columns=[l]{fullflexible},
+  numbers=left,
+  xrightmargin=0zw,
+  xleftmargin=3zw,
+  numberstyle={\scriptsize},
+  stepnumber=1,
+  numbersep=1zw,
+  lineskip=-0.5ex
+}
+%ここまでソースコードの表示に関する設定
+%---------------------------------------------------
+
+\thispagestyle{empty}
+\vspace*{2cm}
+\thispagestyle{empty}
+\begin{spacing}{1}
+
+\begin{center}
+{\Large 明石工業高等専門学校電気情報工学科 \\[1truecm]
+電気情報工学実験II実験レポート} \\[3.5truecm]
+\huge \textgt{\textbf{ディジタルオシロスコープと波形処理}} \\
+\LARGE Digital Ociloscope and Waveform Processing\\[4truecm]
+\Large E1621 \CID{8705}橋 尚太郎 \\
+(電気情報工学科) \\[1truecm]
+実験担当教員 細川 篤 \\
+提出年月日：\today
+\end{center}
+
+\newpage
+\pagenumbering{roman}
+\tableofcontents
+\end{spacing}
+\clearpage
+\pagenumbering{arabic}
+\pagestyle{fancy}
+\setlength{\headheight}{5truemm}
+
+\input{1_mokuteki_genri.tex}
+\input{2_method.tex}
+\input{3_result.tex}
+\input{4_discuss.tex}
+
+\newpage
+\pagestyle{plain}
+\bibliographystyle{jplain}
+\addcontentsline{toc}{section}{参考文献}
+\begin{thebibliography}{3}
+\setlength{\parskip}{0cm} %enumerateのマージン
+\setlength{\itemsep}{0cm}
+
+\bibitem{repo}
+東洋大学ホームページ 機械工学実験II補助資料実験レポートの書き方\\
+URL: \verb|www2.toyo.ac.jp/~fujimatsu/kikai2/EXP_report.pdf|\\
+参照年月日 平成30年4月22日
+
+\bibitem{iwa}
+岩崎 俊, 電子情報レクチャーシリーズB-13電磁気計測, コロナ社, 2002年8月30日発行
+
+\bibitem{note}
+電気電子計測講義ノート
+
+\bibitem{slide}
+電気情報工学実験II配布スライド
+\bibitem{hyrezo}
+オシロの「ハイレゾ」とは何か 日経xTECH (クロステック)\\
+URL: \verb|http://nikkeibp.co.jp/dm/atcl/feature/15/032700084/032800015/| \\
+参照年月日 平成30年5月19日
+
+
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,51 @@
+\mysection{実験方法}
+本実験で使用する器具を表\ref{tb1}に示す。
+
+\begin{table}[ht]
+  \centering
+  \caption{使用器具}
+  \begin{tabular}[t]{lcc}
+  \toprule
+  \multicolumn{1}{c}{使用機器}&\multicolumn{1}{c}{型番}&規格等\\
+  \midrule
+  ディジタルオシロスコープ&Tektronix&TDS2012B, 100-240 V, 100 MHz\\
+  ファンクションジェネレータ&IWATSU&SG-4105, 110-240 V, 10-15 MHz\\
+  パーソナルコンピュータ&HP&--\\
+  表計算ソフト&Microsoft Excel&--\\
+  \bottomrule
+  \end{tabular}
+  \label{tb1}
+\end{table}
+
+\begin{enumerate}
+  \setlength{\parskip}{0cm} % 段落間
+  \setlength{\itemsep}{0cm} % 項目間
+  \item ファンクションジェネレータの出力を振幅1 V周波数100 kHz、デューティファクター 20\verb|%| の方形波に設定する。
+  \item ディジタルオシロスコープのDCモードのACモードの画面の出力の違いを確認する。
+  \item ファンクションジェネレータの出力を振幅50 mV、周波数100.1 kHzの正弦波に設定する。
+  \item ディジタルオシロスコープの掃引モードをオートモードとして、トリガレベルを操作し、正・負のピーク値の間にある場合・ない場合それぞれの違いを観測する。
+  \item 掃引モードをノーマルに変更し、トリガレベルを上記 (4) と同様に操作し、波形を観測する。
+  \item ディジタルオシロスコープの波形取り込みモードをサンプルからアベレージに変えて、波形の変化を観測する。
+  \item 水平軸間隔を2.5 ms ~ 5 msとしたときの表示波形の周波数を測定する。
+  \item ディジタルオシロスコープで観測した波形のデータをUSBメモリに保存する。
+  \item ファンクションジェネレータの出力を振幅1 V周波数10 kHzの三角波に設定する。
+  \item 上記 (9)のデータを保存し、サンプリング間隔と量子化間隔を求める。
+  \item ファンクションジェネレータの出力を振幅220 mV周波数1600 Hz、デューティファクター 66 \verb|%| の方形波の波形データを保存する。
+  \item 上記 (11) で保存した波形を、 PCの表計算ソフトで読み込み、各セルで、
+  式\eqref{eq5}の算術演算を行い、フーリエ係数 $b_0, b_1, b_2, b_3, b_4, b_5, b_6, a_1, a_2, a_3, a_4, a_5, a_6$ を求める。
+  \item 上記 (12) で求めたフーリエ係数を用いて、観測波形の近似波形を作る。
+  \item 上記 (7) で保存した波形を保存波形の図から読み取り、式\eqref{eq6}で近似する。\\
+  \begin{screen}
+  \begin{equation}
+    f(t) = \left\{
+    \begin{array}{ll}
+    V_1 \si{[\milli V]} & (t_1 \leqq t < t_2)\\
+    V_2 \si{[\milli V]} & (t_2 \leqq t < t_3)\\
+    \end{array}
+  \right.
+  \label{eq6}
+  \end{equation}
+\end{screen}
+  \item フーリエ係数の定義の式から手計算し、式\ref{eq5}の計算結果と比べる。
+\end{enumerate}
+

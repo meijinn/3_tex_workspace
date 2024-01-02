@@ -1,0 +1,69 @@
+\begin{enumerate}
+  \item ディスプレイのアスペクト比とサイズ(ディスプレイの対角線長さ)をディスプレイの縦・横の長さに変換する。
+  \begin{align}
+    D_h = D_{inch}\cdot m \cdot \frac{a}{\sqrt{a^2+b^2}}\\
+    D_v = D_{inch}\cdot m \cdot \frac{b}{\sqrt{a^2+b^2}}
+  \end{align}
+  $D_h$：ディスプレイの横の長さ [cm]\\
+  $D_v$：ディスプレイの縦の長さ [cm]\\
+  $D_{inch}$：ディスプレイの対角線の長さ[inch]\\
+  $m$：2.4 [cm/inch]\\
+  $a$：ディスプレイの横のアスペクト比 16 [単位なし] (または、ピクセル数 1920[px])\\
+  $b$：ディスプレイの縦のアスペクト比 9 [単位なし] (または、ピクセル数 1080[px])
+  \item ディスプレイの縦・横の長さとディスプレイとの視点距離をアセットコルサ上での水平・垂直方向の基準視野角に変換する。
+  \begin{align}
+    h_{fov_s} = 2\tan{\frac{D_h}{2f}}\\
+    v_{fov_s} = 2\tan{\frac{D_v}{2f}}
+  \end{align}
+  $h_{fov_s}$：基準水平視野角[度]\\
+  $v_{fov_s}$：基準垂直視野角[度]\\
+  $f$：視点距離[cm]
+  
+  \item 上式において、基準視野角を\tsuyo{映像クロップによる視野角}に変換する。\tsuyo{クロップ率 $n$ の値域は $0.2 < n < 1$ とする。}($n = 1$の時$h_{fov_s}$、$v_{fov_s}$ (基準視野角)とする。) 
+  下式は、映像のクロップにより、視野範囲が変わることを意味する。クロップは縦横比を一定とし、映像の中心は変えない。
+  \begin{align}
+    h_{fov_{crop}} = 2\arctan{\frac{D_h}{2f\cdot n}}\\
+    v_{fov_{crop}} = 2\arctan{\frac{D_v}{2f\cdot n}}
+  \end{align}
+  $h_{fov_{crop}}$：映像クロップによる水平視野角[度]\\
+  $v_{fov_{crop}}$：映像クロップによる垂直視野角[度]\\
+  $n$：クロップ率[単位なし]
+
+  \item ここで、\tsuyo{視野角を基準よりも大きくとる場合}に拡張する。つまり、\tsuyo{$n > 1$}を考える。
+  ここでは、$n = 0.2$\verb|～|$3.5$ として拡張し、得られた視野角を\tsuyo{体感速度のパラメータ $h_{fov_v} v_{fov_v}$とする。}
+  $n$は、クロップ率を基準視野角から拡大または縮小するための値として拡張した、\tsuyo{視野角拡大率}とする。視野角拡大率は、$h_{fov_v}$、$v_{fov_v}$のパラメータである。
+  つまり、体感速度$v_{sense} = f(h_{fov_v}) = f(g(n))$とし、$h_{fov_v} = g(n)$である。以下に$g(n)$を示す。
+  \begin{align}
+    h_{fov_v} = 2\arctan{\frac{D_h}{2f\cdot n}}\\
+    v_{fov_v} = 2\arctan{\frac{D_v}{2f\cdot n}}
+  \end{align}
+  $h_{fov_v}$：水平視野角変数[度]\\
+  $v_{fov_v}$：垂直視野角変数[度]\\
+  $n$：視野角拡大率[単位なし]
+  \item 体感速度は、基準視野角と水平視野角変数におけるそれぞれの映像のポール間ピクセル数の比を、実速度に乗ずることで求められる。
+  \begin{align}
+    v_{sense} = \frac{px_v}{px_s}v_s = m_{sense}\cdot v_s
+  \end{align}
+  $px_v$：$v_{fov_v}$におけるポール間ピクセル数[px] \tsuyo{実測値}\\
+  $px_s$：$v_{fov_s}$におけるポール間ピクセル数[px] \tsuyo{実測値}\\
+  $v_{sense}$：体感速度[km/h]\\
+  $v_s$：実速度[km/h]\\
+  $m_{sense}$：$\frac{px_v}{px_s}$(ポール間ピクセル数の比)[単位なし]
+  \item $v_{sense} = f(h_{fov_v})$となる$f$を導きたい。$v_s$は一定として考えているため、$m_{sense}=f(h_{fov_v})$を導く。ここで、視野角変数$h_{fov_v}$において、
+  映像中のポールが画面の端にあるとする。(視点とディスプレイの短辺は$h_{fov_v}$の角度をなす。)そこから、次のポールが画面の端になるように縦横比一定でクロップした時の
+  クロップ率を視野辺ピクセル倍率$n_{p_{to}p}$[単位なし]とする。基準視野角においても同様に$n_{p_{to}p_s}$[単位なし(基準視野角の場合の$n_{p_{to}p}$)]を求める。なお、遠近法により、
+  $n_{p_{to}p_s}=2$であることが一般的に知られている。すると、$m_{sense}$は、幾何学的に以下のように求めることができる。
+  \begin{align}
+    px_s = \frac{h_{px}}{2}-\frac{h_{px}}{2}\cdot \left(\frac{\tan{\frac{h_{fov_s}}{2\cdot n_{p_{to}p_s}}}}{\tan{\frac{h_{fov_s}}{2}}}\right)=\frac{h_{px}}{2}\cdot \left(1-\frac{\tan{\frac{h_{fov_s}}{4}}}{\tan{\frac{h_{fov_s}}{2}}}\right)\\
+    px_v = \frac{h_{px}}{2}-\frac{h_{px}}{2}\cdot \left(\frac{\tan{\frac{h_{fov_v}}{2\cdot n_{p_{to}p}}}}{\tan{\frac{h_{fov_v}}{2}}}\right)=\frac{h_{px}}{2}\cdot \left(1-\frac{\tan{\frac{h_{fov_v}}{2\cdot n_{p_{to}p}}}}{\tan{\frac{h_{fov_v}}{2}}}\right)\\
+    m_{sense} = \frac{px_v}{px_s}=\frac{\frac{h_{px}}{2}\cdot \left(1-\frac{\tan{\frac{h_{fov_v}}{2\cdot n_{p_{to}p}}}}{\tan{\frac{h_{fov_v}}{2}}}\right)}{\frac{h_{px}}{2}\cdot \left(1-\frac{\tan{\frac{h_{fov_s}}{4}}}{\tan{\frac{h_{fov_s}}{2}}}\right)}=\frac{1-\frac{\tan{\frac{h_{fov_v}}{2\cdot n_{p_{to}p}}}}{\tan{\frac{h_{fov_v}}{2}}}}{1-\frac{\tan{\frac{h_{fov_s}}{4}}}{\tan{\frac{h_{fov_s}}{2}}}}
+  \end{align}
+  $h_{px}$：ディスプレイの横のピクセル数 [px] (今回は1920 px)\\
+  $n_{p_{to}p}$：$h_{fov_v}$における視野辺ピクセル倍率 [単位なし] \tsuyo{実測値}\\
+  $n_{p_{to}p_s}$：$h_{fov_s}$における視野辺ピクセル倍率 [単位なし(定数値：2)]\\
+  幾何学的に求められた$f(m_{sense})$を使ったものを体感速度$v_{sense}$の理論式とする。
+\end{enumerate}
+
+以上により、$$v_{sense} = f(h_{fov_v})\cdot v_s = f(g(n)) \cdot v_s$$
+$$h_{fov_v} = g(n)$$を導出した。
+これらにより、水平視野角$h_{fov_v}$を体感速度$v_{sense}$に変換した。

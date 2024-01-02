@@ -1,0 +1,66 @@
+\mysection{演習1}
+\subsection{実行プログラム}
+実行プログラムをソースコード\ref{s1}に示す。
+\begin{lstlisting}[caption=演習1のプログラム,label=s1]
+#include<stdio.h>
+int main()
+{
+  printf("Hello/n");
+  return 0;
+}
+\end{lstlisting}
+
+\mysubsection{実行結果}
+JTWのコンソール上にHelloと表示される。
+\mysection{演習2}
+\subsection{実行プログラム}
+実行プログラムをソースコード\ref{s2}に示す。
+\begin{lstlisting}[caption=演習2のプログラム,label=s2]
+#include <stdio.h>
+#include <process.h>
+
+int main()
+{
+	int i;
+	FILE *fp;
+
+	if((fp = fopen("test.dat", "wt")) == NULL){
+		printf("Cannot Open test.dat!!\n");
+		exit(1);
+	}
+	
+	for(i = 0; i < 100; i++){
+		fprintf(fp, "%3d\n", i);
+	}
+	fclose(fp);
+	return 0;
+}  
+\end{lstlisting}
+
+\mysubsection{実行結果}
+ロボット上で得られたデータファイルをソースコード\ref{s3}に示す。0\verb|～|100までの数値が出力される。
+\begin{lstlisting}[caption=ロボット上で得られたデータファイル(TEST.DAT),label=s3]
+  0
+  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+~~~~~
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+..................
+\end{lstlisting}

@@ -14,6 +14,11 @@
 \usepackage{algorithmic}
 \usepackage{setspace}
 \usepackage{subfigure}
+\usepackage[deluxe,bold]{otf}
+\usepackage[haranoaji]{pxchfon}
+\usepackage{redeffont}
+\usepackage{listings,jvlisting} %日本語のコメントアウトをする場合jvlisting（もしくはjlisting）が必要
+\usepackage{booktabs}
 %---------------------------------------------------
 \definecolor{bl}{rgb}{0.94,0.97,1}
 \definecolor{gr}{rgb}{0.5,0.5,0.5}
@@ -39,6 +44,7 @@
 \newcommand{\mysection}[1]{\vspace{-20pt}\section{#1}}
 \newcommand{\mysubsection}[1]{\vspace{-20pt}\subsection{#1}}
 \newcommand{\mysubsubsection}[1]{\vspace{-10pt}\subsubsection{#1}}
+\renewcommand{\lstlistingname}{ソースコード}
 %---------------------------------------------------
 % ヘッダーとフッターの設定
 \usepackage{fancyhdr}
@@ -53,6 +59,29 @@
 \setlength{\abovedisplayskip}{1.5pt} 
 \setlength{\belowdisplayskip}{0pt}
 %---------------------------------------------------
+%ここからソースコードの表示に関する設定
+\lstset{
+  basicstyle={\ttfamily},
+  identifierstyle={\small},
+  commentstyle={\smallitshape},
+  keywordstyle={\small\bfseries},
+  ndkeywordstyle={\small},
+  stringstyle={\small\ttfamily},
+  frame={tb},
+  breaklines=true,
+  columns=[l]{fullflexible},
+  numbers=left,
+  xrightmargin=0zw,
+  xleftmargin=3zw,
+  numberstyle={\scriptsize},
+  stepnumber=1,
+  numbersep=1zw,
+  lineskip=-0.5ex
+}
+%ここまでソースコードの表示に関する設定
+%---------------------------------------------------
+
+
 \pagenumbering{arabic}
 \pagestyle{fancy}
 \setlength{\headheight}{5truemm}

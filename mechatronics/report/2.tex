@@ -1,0 +1,102 @@
+\mysection{演習3}
+\subsection{実行プログラム}
+実行プログラムをソースコード\ref{s4}に示す。
+\begin{lstlisting}[caption=演習3のプログラム,label=s4]
+#include <stdio.h>
+#include <dos.h>
+#include "v25.h"
+#include "ms.h"
+ 
+int main(){
+  pokeb( _V25BASE, _PMC2, 0x00 ); /*P20-P27 ポートモード*/
+  pokeb( _V25BASE, _PM2, 0x00 );  /*P20-P27 出力ポート  */
+
+  while(1){
+      ms_led2( 0xff ); /* 全LEDの点灯 */
+      ms_wait( 1000 ); /* 待ち時間 1s */
+      ms_led2( 0x00 ); /* 全LEDの消灯 */
+      ms_wait( 1000 ); /* 待ち時間 1s */
+    }
+  return 0;
+}
+\end{lstlisting}
+
+\mysubsection{実行結果}
+ポート2のLEDが点滅する。
+
+\mysection{演習4}
+\subsection{実行プログラム}
+実行プログラムをソースコード\ref{s5}に示す。
+\begin{lstlisting}[caption=演習4のプログラム,label=s5]
+int main(){
+  pokeb( _V25BASE, _PMC2, 0x00 ); /*P20-P27 ポートモード*/
+  pokeb( _V25BASE, _PM2, 0x00 );  /*P20-P27 出力モード*/
+ 
+  while(1){
+    int i;
+    int a = 0x01;
+    for(i=0;i<8;i++)
+    {
+      ms_led2(a);
+      ms_wait(1000);
+      a = a << 1;
+    }
+  }
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{実行結果}
+LED0からLED7の順に点灯した後、この一連の動作を繰り返す。
+
+\mysection{演習5}
+\subsection{実行プログラム}
+実行プログラムをソースコード\ref{s6}に示す。
+\begin{lstlisting}[caption=演習5のプログラム,label=s6]
+#include <stdio.h>
+#include <dos.h>
+#include "v25.h"
+#include "ms.h"
+  
+int main(){
+    int i;
+
+    pokeb( _V25BASE, _PMC1, 0x20 ); /* P15:TOUT 出力*/
+    for( i=0; i<3; i++){
+        ms_beep( 440, 500 ); /* 440Hz, 0.5s */
+        ms_wait( 500 ); /* 待ち時間 0.5s*/
+    }
+    ms_beep( 880, 1000 );
+    return 0;
+}
+\end{lstlisting}
+
+\mysubsection{実行結果}
+440Hzの音が0.5秒毎に3回鳴った後、880Hzの音が1秒間鳴る。
+
+\mysection{演習6}
+\subsection{実行プログラム}
+実行プログラムをソースコード\ref{s7}に示す。
+\begin{lstlisting}[caption=演習6のプログラム,label=s7]
+#include <stdio.h>
+#include <dos.h>
+#include "v25.h"
+#include "ms.h"
+  
+int main(){
+  int i;
+  int f;
+  int ms;
+
+  pokeb( _V25BASE, _PMC1, 0x20 );
+  while(1){
+    scanf("%d %d", &f, &ms);
+    ms_beep( f, ms ); /* 440Hz, 0.5s */
+  }
+  return 0;
+}
+\end{lstlisting}
+
+\mysubsection{実行結果}
+JTWのプロンプト上でキーボードから周波数\si{[Hz]}(スペース)時間\si{[s]}を入力して、
+エンターキーを入力すると、指定した数値に応じた音がブザーから鳴る。

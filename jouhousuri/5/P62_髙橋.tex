@@ -1,0 +1,98 @@
+\documentclass[10pt,a4j,dvipdfmx]{jarticle}
+%---------------------------------------------------
+\usepackage{hyperref}
+\usepackage{pxjahyper}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{amssymb,amsmath,mathtools}
+\usepackage{ascmac}
+\usepackage{float}
+\usepackage{setspace}
+\usepackage[dvips,usenames]{color}
+\usepackage{colortbl}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{setspace}
+\usepackage{subfigure}
+\usepackage[deluxe,bold]{otf}
+\usepackage[haranoaji]{pxchfon}
+\usepackage{redeffont}
+\usepackage{listings,jvlisting} %日本語のコメントアウトをする場合jvlisting（もしくはjlisting）が必要
+\usepackage{booktabs}
+\usepackage{siunitx}
+%---------------------------------------------------
+\definecolor{bl}{rgb}{0.94,0.97,1}
+\definecolor{gr}{rgb}{0.5,0.5,0.5}
+% \makeatletter
+% \def\section{\newpage\@startsection {section}{1}{\z@}{2.3ex plus -1ex minus -.2ex}{2.3 ex plus .2ex}{\Large\bf}}
+% \makeatother
+%---------------------------------------------------
+\setlength{\textwidth}{160truemm}
+\setlength{\textheight}{240truemm}
+\setlength{\topmargin}{-14.5truemm}
+\setlength{\oddsidemargin}{-0.5truemm}
+\setlength{\headheight}{0truemm}
+\setlength{\parindent}{1zw}
+\setlength{\abovedisplayskip}{-2pt} % 数式上部のマージン
+\setlength{\belowdisplayskip}{0pt} % 数式下部のマージン
+\setlength{\parskip}{0cm} % 段落間
+\setlength{\itemsep}{0cm} % 項目間
+%---------------------------------------------------
+\setstretch{1.2}
+%---------------------------------------------------
+\renewcommand{\subfigtopskip}{5pt}	% 図の上の隙間。上図の副題と下図の間。
+\renewcommand{\subfigbottomskip}{0pt} % 図の下の隙間。副題と本題の間。
+\renewcommand{\subfigcapskip}{-6pt}	% 図と副題の間
+\renewcommand{\subcapsize}{\scriptsize} % 副題の文字の大きさ
+\newcommand{\mysection}[1]{\newpage\vspace{-20pt}\section{#1}}
+\newcommand{\mysubsection}[1]{\vspace{-20pt}\subsection{#1}}
+\newcommand{\mysubsubsection}[1]{\vspace{-10pt}\subsubsection{#1}}
+%---------------------------------------------------
+% ヘッダーとフッターの設定
+\usepackage{fancyhdr}
+\rhead{\leftmark}
+\chead{}
+\lhead{\rightmark}
+\cfoot{\thepage}
+
+\rfoot{}
+\begin{document}
+%---------------------------------------------------
+\setlength{\abovedisplayskip}{1.5pt} 
+\setlength{\belowdisplayskip}{0pt}
+%---------------------------------------------------
+%ここからソースコードの表示に関する設定
+\lstset{
+  basicstyle={\ttfamily},
+  identifierstyle={\small},
+  commentstyle={\smallitshape},
+  keywordstyle={\small\bfseries},
+  ndkeywordstyle={\small},
+  stringstyle={\small\ttfamily},
+  frame={tb},
+  breaklines=true,
+  columns=[l]{fullflexible},
+  numbers=left,
+  xrightmargin=0zw,
+  xleftmargin=3zw,
+  numberstyle={\scriptsize},
+  stepnumber=1,
+  numbersep=1zw,
+  lineskip=-0.5ex
+}
+%ここまでソースコードの表示に関する設定
+%---------------------------------------------------
+\pagenumbering{arabic}
+\pagestyle{fancy}
+\setlength{\headheight}{5truemm}
+
+\input{62.tex}
+\input{63.tex}
+\input{64.tex}
+\input{65.tex}
+\input{66.tex}
+\input{68.tex}
+\input{69.tex}
+\input{70.tex}
+
+\end{document}

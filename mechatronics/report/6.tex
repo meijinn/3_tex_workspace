@@ -1,0 +1,928 @@
+\mysection{演習19}
+\subsection{実行プログラム}
+実行プログラムをソースコード\ref{s19}に示す。
+パラメータ値は、\textgt{RADIUS}を変化させると、
+回転量が変化し、ロボットの回転と進行距離の両方が代わるため、
+DISTANCEの値のみを変更した。\textgt{DISTANCE}の実測値を計測し、
+DISTANCEの値を上下に変化させて、34.0から34.05に変更した。
+360度回転は、指示値通りに動くが、直進の際の始動にモータの左右差が
+あったため、それを考慮した上で34.05の値とした。
+
+\begin{lstlisting}[caption=演習19のプログラム,label=s19]
+#include <stdio.h>
+#include <math.h>
+#include <process.h>
+#include <dos.h>
+#include "v25.h"
+#include "ms.h"
+
+#define D2R         (M_PI/180)
+#define R2D         (180/M_PI)
+#define RADIUS	15.0
+#define DISTANCE    34.05
+#define REDUCTION   19.225
+#define CPR         400
+#define MMPS        (60*REDUCTION/(2.0*M_PI*RADIUS))
+#define DPC         (2.0*M_PI*RADIUS/((float)CPR*REDUCTION))
+#define APC         (DPC/(2*DISTANCE))
+#define DMAX        1000
+#define THRESH_D    10
+#define THRESH_Q    5*D2R
+#define THRESH_V    50
+
+#define ABS(x)      (x<0?-(x):(x))
+
+void estimate(double *px,double *py,double *pq,long *pt);
+void translate(double d,double vmax,double gain);
+void rotate(double qd,double wmax,double gain);
+
+int k=0;
+int xi[DMAX],yi[DMAX],qi[DMAX];
+long ti[DMAX];
+
+int main(void)
+{
+    double x,y,q;
+    int i;
+    int kp=8,ki_inv=8;
+    int vmax = 100;
+    int wmax = 100/DISTANCE;
+    int nl,nr;
+    long t,nt;
+    FILE *fp;
+
+    ms_init();
+    ms_motor_on();
+    ms_set_gain(kp,ki_inv);
+
+    estimate(&x,&y,&q,&t);
+    rotate(360*D2R,wmax,5);
+    translate(1000,vmax,5);
+
+    ms_set_v(0,0);
+    do{
+        estimate(&x,&y,&q,&t);
+        ms_read_v(&nl,&nr,&nt);
+    }while(nl != 0 || nr != 0);
+
+    ms_motor_off();
+
+    if((fp=fopen("data.dat","wt"))==NULL)
+    {
+        printf("Can't open file...\n");
+    }
+
+    for(i=0;i<k;i++)
+    {
+        fprintf(fp,"%5d %5d %5d %5ld\n",xi[i],yi[i],qi[i],ti[i]);
+    }
+    fclose(fp);
+    return 0;
+}
+
+void estimate(double *px,double *py,double *pq,long *pt)
+{
+    static long cl0=0,cr0=0;
+    static double x=0.0,y=0.0,q=0.0;
+    long cl,cr,ct;
+    int dl,dr;
+    double ds;
+
+    ms_read_c(&cl,&cr,&ct);
+    dl=cl-cl0;
+    dr=cr-cr0;
+    cl0=cl;
+    cr0=cr;
+    ds=DPC/2*(dr+dl);
+    x += ds*cos(q);
+    y += ds*sin(q);
+    q += APC*(dr-dl);
+
+    *px=x;
+    *py=y;
+    *pq=q;
+    *pt=ct;
+    if (k<DMAX)
+    {
+        xi[k]=10*x;
+        yi[k]=10*y;
+        qi[k]=1000*q;
+        ti[k]=ct;
+        k++;
+    }    
+
+}
+
+void translate(double d,double vmax,double gain)
+{
+    double x0,y0,q0,x,y,q;
+    long t0,t,nt;
+    double cosq0,sinq0,dd,vc;
+    int nc,nl,nr;
+
+    estimate(&x0,&y0,&q0,&t0);
+    cosq0=cos(q0);
+    sinq0=sin(q0);
+    x=x0;
+    y=y0;
+    q=q0;
+    t=t0;
+
+    do
+    {
+        dd=cosq0*(x-x0)+sinq0*(y-y0);
+        vc=gain*(d-dd);
+        if (ABS(vc)>vmax)
+        {
+            vc=(vc<0.0)?-vmax:vmax;
+        }
+        nc=vc*MMPS;
+        ms_set_v(nc,nc);
+        estimate(&x,&y,&q,&t);
+        ms_read_v(&nl,&nr,&nt);
+    } while (ABS(d-dd)>THRESH_D||ABS(nl)>THRESH_V||ABS(nr)>THRESH_V);
+}
+
+void rotate(double qd,double wmax,double gain)
+{
+  double x0,y0,q0,x,y,q;
+  long t0,t,nt;
+  double qq,wc,v,dw;
+  int nl,nr;
+
+  estimate(&x0,&y0,&q0,&t0);
+  x=x0;
+  y=y0;
+  q=q0;
+  t=t0;
+
+  do{
+  qq=q-q0;
+  wc=gain*(qd-qq);
+  if(ABS(wc)>wmax)
+  {
+    wc=(wc<0.0) ? -wmax:wmax;
+  }
+  dw=DISTANCE*wc;
+  nl=-MMPS*dw;
+  nr=MMPS*dw;
+  ms_set_v(nl,nr);
+  estimate(&x,&y,&q,&t);
+  ms_read_v(&nl,&nr,&nt);
+  }while (ABS(qd-qq)>THRESH_Q||ABS(nl)>THRESH_V||ABS(nr)>THRESH_V);
+}
+\end{lstlisting}
+
+\mysubsection{実行結果}
+ロボットが、その場で360度回転して1000[mm]直進する。
+回転角度を360度より浅くして、直進動作時に左右のモータの始動差を吸収して、
+360度方向に直進する。
+
+\mysection{演習20}
+\subsection{実行プログラム}
+実行プログラムをソースコード\ref{s20}に示す。
+ロボットの初期位置を$(x_s, y_s, \theta_s) = (0, 0, 0)$としている。
+
+\begin{lstlisting}[caption=演習20のプログラム,label=s20]
+#include <stdio.h>
+#include <math.h>
+#include <process.h>
+#include <dos.h>
+#include "v25.h"
+#include "ms.h"
+
+#define D2R         (M_PI/180)
+#define R2D         (180/M_PI)
+#define RADIUS	15.0
+#define DISTANCE    34.05
+#define REDUCTION   19.225
+#define CPR         400
+#define MMPS        (60*REDUCTION/(2.0*M_PI*RADIUS))
+#define DPC         (2.0*M_PI*RADIUS/((float)CPR*REDUCTION))
+#define APC         (DPC/(2*DISTANCE))
+#define DMAX        1000
+#define THRESH_D    10
+#define THRESH_Q    5*D2R
+#define THRESH_V    50
+
+#define ABS(x)      (x<0?-(x):(x))
+
+void estimate(double *px,double *py,double *pq,long *pt);
+void translate(double d,double vmax,double gain);
+void rotate(double qd,double wmax,double gain);
+
+int k=0;
+int xi[DMAX],yi[DMAX],qi[DMAX];
+long ti[DMAX];
+
+int main(void)
+{
+    double x,y,q;
+    double x_d=0,x_s=0,y_d=0,y_s=0,th_s=0,th_d=0,th_1=0,th_2=0,a_0=0;
+    int i;
+    int kp=8,ki_inv=8;
+    int vmax = 100;
+    int wmax = 100/DISTANCE;
+    int nl,nr;
+    long t,nt;
+    FILE *fp;
+
+
+
+
+    while(1){
+    ms_init();
+        ms_motor_on();
+        ms_set_gain(kp,ki_inv);
+    printf("x_d y_d th_d\n");
+    scanf("%lf %lf %lf",&x_d,&y_d,&th_d);
+        estimate(&x,&y,&q,&t);
+    th_1=atan2(y_d-y_s,x_d-x_s)-th_s;
+        rotate(th_1,wmax,5);
+    a_0=sqrt((x_d-x_s)*(x_d-x_s)+(y_d-y_s)*(y_d-y_s));
+        translate(a_0,vmax,5);
+    th_2=th_d*D2R-th_1-th_s;
+    rotate(th_2,wmax,5);
+    printf("aaa\n");
+    x_s=x_d;
+    y_s=y_d;
+    th_s=th_d;
+
+        ms_set_v(0,0);
+        do{
+        estimate(&x,&y,&q,&t);
+        ms_read_v(&nl,&nr,&nt);
+        }while(nl != 0 || nr != 0);
+
+    ms_motor_off();
+    }
+    return 0;
+}
+
+void estimate(double *px,double *py,double *pq,long *pt)
+{
+    static long cl0=0,cr0=0;
+    static double x=0.0,y=0.0,q=0.0;
+    long cl,cr,ct;
+    int dl,dr;
+    double ds;
+
+    ms_read_c(&cl,&cr,&ct);
+    dl=cl-cl0;
+    dr=cr-cr0;
+    cl0=cl;
+    cr0=cr;
+    ds=DPC/2*(dr+dl);
+    x += ds*cos(q);
+    y += ds*sin(q);
+    q += APC*(dr-dl);
+
+    *px=x;
+    *py=y;
+    *pq=q;
+    *pt=ct;
+    if (k<DMAX)
+    {
+        xi[k]=10*x;
+        yi[k]=10*y;
+        qi[k]=1000*q;
+        ti[k]=ct;
+        k++;
+    }    
+
+}
+
+void translate(double d,double vmax,double gain)
+{
+    double x0,y0,q0,x,y,q;
+    long t0,t,nt;
+    double cosq0,sinq0,dd,vc;
+    int nc,nl,nr;
+
+    estimate(&x0,&y0,&q0,&t0);
+    cosq0=cos(q0);
+    sinq0=sin(q0);
+    x=x0;
+    y=y0;
+    q=q0;
+    t=t0;
+
+    do
+    {
+        dd=cosq0*(x-x0)+sinq0*(y-y0);
+        vc=gain*(d-dd);
+        if (ABS(vc)>vmax)
+        {
+            vc=(vc<0.0)?-vmax:vmax;
+        }
+        nc=vc*MMPS;
+        ms_set_v(nc,nc);
+        estimate(&x,&y,&q,&t);
+        ms_read_v(&nl,&nr,&nt);
+    } while (ABS(d-dd)>THRESH_D||ABS(nl)>THRESH_V||ABS(nr)>THRESH_V);
+}
+
+void rotate(double qd,double wmax,double gain)
+{
+    double x0,y0,q0,x,y,q;
+    long t0,t,nt;
+    double qq,wc,v,dw;
+    int nl,nr;
+
+    estimate(&x0,&y0,&q0,&t0);
+    x=x0;
+    y=y0;
+    q=q0;
+    t=t0;
+
+    do{
+    qq=q-q0;
+    wc=gain*(qd-qq);
+    if(ABS(wc)>wmax)
+    {
+        wc=(wc<0.0) ? -wmax:wmax;
+    }
+    dw=DISTANCE*wc;
+    nl=-MMPS*dw;
+    nr=MMPS*dw;
+    ms_set_v(nl,nr);
+    estimate(&x,&y,&q,&t);
+    ms_read_v(&nl,&nr,&nt);
+    printf("%lf %lf %lf\n", ABS(qd-qq), ABS(nl), ABS(nr));
+    }while (ABS(qd-qq)>THRESH_Q||ABS(nl)>THRESH_V||ABS(nr)>THRESH_V);
+}
+\end{lstlisting}
+
+\mysubsection{実行結果}
+目標位置$(x_d, y_d, \theta_d)$を入力すると、
+目標方向を向き、目標の座標$(x_d, y_d)$の方向に直進し、
+到着すると$\theta_d$方向に向きを変える。
+目標位置・姿勢の状態をとると、初期値を現在値に更新し、
+再び目標位置の入力待機を行う。その後、目標位置の入力と移動の処理を繰り返して行うことができる。
+その際、目標位置の入力前にモータの電圧をオンと初期化、出力後にモータの電圧をオフ
+を毎ループごとに繰り返し行う。
+
+\mysection{演習21}
+\subsection{実行プログラム}
+実行プログラムをソースコード\ref{s21}に示す。
+
+\begin{lstlisting}[caption=演習21のプログラム,label=s21]
+#include <stdio.h>
+#include <math.h>
+#include <process.h>
+#include <dos.h>
+#include "v25.h"
+#include "ms.h"
+
+#define D2R         (M_PI/180)
+#define R2D         (180/M_PI)
+#define RADIUS	15.0
+#define DISTANCE    34.05
+#define REDUCTION   19.225
+#define CPR         400
+#define MMPS        (60*REDUCTION/(2.0*M_PI*RADIUS))
+#define DPC         (2.0*M_PI*RADIUS/((float)CPR*REDUCTION))
+#define APC         (DPC/(2*DISTANCE))
+#define DMAX        1000
+#define THRESH_D    10
+#define THRESH_Q    5*D2R
+#define THRESH_V    1
+
+#define GOALX       1200
+#define GOALY       1000
+#define GOALQ       0
+#define VMAX        150
+#define WMAX        (VMAX/(3*DISTANCE))
+#define REVERSE     200
+
+#define ABS(x)      (x<0?-(x):(x))
+
+void estimate(double *px,double *py,double *pq,long *pt);
+void translate(double d,double vmax,double gain);
+int translate2(double d,double vmax,double gain);
+void rotate(double qd,double wmax,double gain);
+double seikika(double angle);
+void avoid(int j);
+
+int k=0;
+int xi[DMAX],yi[DMAX],qi[DMAX];
+long ti[DMAX];
+
+int main(void)
+{
+    double x,y,q,q1,q2,dl,dq;
+    int i,j;
+    int kp=8,ki_inv=8;
+    int nl,nr;
+    long t,nt;
+    FILE *fp;
+
+    ms_init();
+    ms_set_gain(kp,ki_inv);
+    ms_motor_on();
+    ms_wait(1000);
+
+    while (1)
+    {
+        estimate(&x,&y,&q,&t);
+
+        dl=sqrt((GOALX-x)*(GOALX-x)+(GOALY-y)*(GOALY-y));
+        if(dl<THRESH_D) break;
+
+        dq=atan2(GOALY-y,GOALX-x)-q;
+        dq=seikika(dq);
+        rotate(dq,WMAX,5);
+
+        j=translate2(dl,VMAX,5);
+
+        avoid(j);
+    }
+
+    while (1)
+    {
+        estimate(&x,&y,&q,&t);
+
+        dq=seikika(GOALQ-q);
+        if (ABS(dq)<THRESH_Q)   break;
+
+        rotate(dq,WMAX,5);
+    }
+
+      ms_motor_off();
+
+    if((fp=fopen("data.dat","wt"))==NULL)
+    {
+        printf("Can't open file...\n");
+        exit(1);
+    }
+
+    for(i=0;i<k;i++)
+    {
+        fprintf(fp,"%5d %5d %5d %5ld\n",xi[i],yi[i],qi[i],ti[i]);
+    }
+    fclose(fp);
+    return 0;
+}
+
+void estimate(double *px,double *py,double *pq,long *pt)
+{
+    static long cl0=0,cr0=0;
+    static double x=0.0,y=0.0,q=0.0;
+    long cl,cr,ct;
+    int dl,dr;
+    double ds;
+
+    ms_read_c(&cl,&cr,&ct);
+    dl=cl-cl0;
+    dr=cr-cr0;
+    cl0=cl;
+    cr0=cr;
+    ds=DPC/2*(dr+dl);
+    x += ds*cos(q);
+    y += ds*sin(q);
+    q += APC*(dr-dl);
+
+    *px=x;
+    *py=y;
+    *pq=q;
+    *pt=ct;
+    if (k<DMAX)
+    {
+        xi[k]=10*x;
+        yi[k]=10*y;
+        qi[k]=1000*q;
+        ti[k]=ct;
+        k++;
+    }    
+
+}
+
+void translate(double d,double vmax,double gain)
+{
+    double x0,y0,q0,x,y,q;
+    long t0,t,nt;
+    double cosq0,sinq0,dd,vc;
+    int nc,nl,nr;
+
+    estimate(&x0,&y0,&q0,&t0);
+    cosq0=cos(q0);
+    sinq0=sin(q0);
+    x=x0;
+    y=y0;
+    q=q0;
+    t=t0;
+
+    do
+    {
+        dd=cosq0*(x-x0)+sinq0*(y-y0);
+        vc=gain*(d-dd);
+        if (ABS(vc)>vmax)
+        {
+            vc=(vc<0.0)?-vmax:vmax;
+        }
+        nc=vc*MMPS;
+        ms_set_v(nc,nc);
+        estimate(&x,&y,&q,&t);
+        ms_read_v(&nl,&nr,&nt);
+    } while (ABS(d-dd)>THRESH_D||ABS(nl)>THRESH_V||ABS(nr)>THRESH_V);
+}
+
+int translate2(double d,double vmax,double gain)
+{
+    double x0,y0,q0,x,y,q,g;
+    long t0,t,nt;
+    double cosq0,sinq0,dd,vc;
+    int nc,nl,nr,s[3],check;
+
+    estimate(&x0,&y0,&q0,&t0);
+    cosq0=cos(q0);
+    sinq0=sin(q0);
+    x=x0;
+    y=y0;
+    q=q0;
+    t=t0;
+
+    do
+    {
+        ms_ifr(s);
+        check = 1*s[0]+2*s[1]+4*s[2];
+        ms_read_v(&nl,&nr,&nt);
+
+        if (check)
+        {
+            for (g = 1; g > 0; g-=0.01)
+                ms_set_v((int)(nl*g),(int)(nr*g));
+            
+            return check;   
+        }
+        
+        dd=cosq0*(x-x0)+sinq0*(y-y0);
+
+        vc=gain*(d-dd);
+
+        if (ABS(vc)>vmax)
+        {
+            vc = (vc < 0.0) ? -vmax : vmax;
+        }
+        nc=vc*MMPS;
+        ms_set_v(nc,nc);
+        estimate(&x,&y,&q,&t);
+        ms_read_v(&nl,&nr,&nt);
+    } while (ABS(d-dd)>THRESH_D||ABS(nl)>THRESH_V||ABS(nr)>THRESH_V);
+    return 0;
+}
+
+void rotate(double qd,double wmax,double gain)
+{
+  double x0,y0,q0,x,y,q;
+  long t0,t,nt;
+  double qq,wc,v,dw;
+  int nl,nr;
+
+  estimate(&x0,&y0,&q0,&t0);
+  x=x0;
+  y=y0;
+  q=q0;
+  t=t0;
+
+  do{
+  qq=q-q0;
+  wc=gain*(qd-qq);
+  if(ABS(wc)>wmax)
+  {
+    wc=(wc<0.0) ? -wmax:wmax;
+  }
+  dw=DISTANCE*wc;
+  nl=-MMPS*dw;
+  nr=MMPS*dw;
+  ms_set_v(nl,nr);
+  estimate(&x,&y,&q,&t);
+  ms_read_v(&nl,&nr,&nt);
+  }while (ABS(qd-qq)>THRESH_Q||ABS(nl)>THRESH_V||ABS(nr)>THRESH_V);
+}
+
+double seikika(double angle)
+{
+    while(angle>M_PI)   angle -= 2*M_PI;
+    while(angle<=-M_PI)   angle += 2*M_PI;
+    return angle;
+}
+
+void avoid(int j)
+{
+    if(j!=0)
+    {
+        translate(-REVERSE,VMAX,5);
+        if(j&1) rotate(-60*D2R,WMAX,5);
+        else rotate(60*D2R,WMAX,5);
+        translate(REVERSE,VMAX,5);
+    }
+}
+\end{lstlisting}
+
+\mysubsection{実行結果}
+ロボットを起動させると、前進し、近接センサが障害物に反応すると、
+ロボットは後退し、一旦後退する。その後センサ値が1であれば60度右に旋回し、
+それ以外ならば、左に60度旋回する。その後、前方に進む。
+
+
+\mysection{演習22}
+\subsection{実行プログラム}
+実行プログラムをソースコード\ref{s22}に示す。
+本プログラムは、移動平均法を用いて、近接センサの値を平均化し、
+標本化している。過去5つのセンサデータ(0か1)を保持し、その平均値が0.8
+以上なら障害物を検知した場合の処理を行う。
+
+\begin{lstlisting}[caption=演習22のプログラム,label=s22]
+#include <stdio.h>
+#include <math.h>
+#include <process.h>
+#include <dos.h>
+#include "v25.h"
+#include "ms.h"
+
+#define D2R         (M_PI/180)
+#define R2D         (180/M_PI)
+#define RADIUS	15.0
+#define DISTANCE    34.05
+#define REDUCTION   19.225
+#define CPR         400
+#define MMPS        (60*REDUCTION/(2.0*M_PI*RADIUS))
+#define DPC         (2.0*M_PI*RADIUS/((float)CPR*REDUCTION))
+#define APC         (DPC/(2*DISTANCE))
+#define DMAX        1000
+#define THRESH_D    10
+#define THRESH_Q    5*D2R
+#define THRESH_V    1
+
+#define GOALX       1200
+#define GOALY       1000
+#define GOALQ       0
+#define VMAX        150
+#define WMAX        (VMAX/(3*DISTANCE))
+#define REVERSE     200
+
+#define ABS(x)      (x<0?-(x):(x))
+
+#define WIDTH 10    /*センサのデータを保存する個数*/
+
+void estimate(double *px,double *py,double *pq,long *pt);
+void translate(double d,double vmax,double gain);
+int translate2(double d,double vmax,double gain);
+void rotate(double qd,double wmax,double gain);
+double seikika(double angle);
+void avoid(int j);
+
+int k=0;
+int xi[DMAX],yi[DMAX],qi[DMAX];
+long ti[DMAX];
+
+    int sum_s [3]={0,0,0};   /*直近10個のデータの合計    0:左,1:中央,2:右(bs)*/
+    int bp=0;   /*最新データの場所*/
+    int data_s[3][WIDTH];  /*直近10個のデータ (buff)*/
+
+int main(void)
+{
+    double x,y,q,q1,q2,dl,dq;
+    int i,j;
+    int kp=8,ki_inv=8;
+    int nl,nr;
+    long t,nt;
+    FILE *fp;
+
+    ms_init();
+    ms_set_gain(kp,ki_inv);
+    ms_motor_on();
+    ms_wait(1000);
+
+    while (1)
+    {
+        estimate(&x,&y,&q,&t);
+
+        dl=sqrt((GOALX-x)*(GOALX-x)+(GOALY-y)*(GOALY-y));
+        if(dl<THRESH_D) break;
+
+        dq=atan2(GOALY-y,GOALX-x)-q;
+        dq=seikika(dq);
+        rotate(dq,WMAX,5);
+
+        j=translate2(dl,VMAX,5);
+
+        avoid(j);
+    }
+
+    while (1)
+    {
+        estimate(&x,&y,&q,&t);
+
+        dq=seikika(GOALQ-q);
+        if (ABS(dq)<THRESH_Q)   break;
+
+        rotate(dq,WMAX,5);
+    }
+
+      ms_motor_off();
+
+    if((fp=fopen("data.dat","wt"))==NULL)
+    {
+        printf("Can't open file...\n");
+        exit(1);
+    }
+
+    for(i=0;i<k;i++)
+    {
+        fprintf(fp,"%5d %5d %5d %5ld\n",xi[i],yi[i],qi[i],ti[i]);
+    }
+    fclose(fp);
+    return 0;
+}
+
+void estimate(double *px,double *py,double *pq,long *pt)
+{
+    static long cl0=0,cr0=0;
+    static double x=0.0,y=0.0,q=0.0;
+    long cl,cr,ct;
+    int dl,dr;
+    double ds;
+
+    ms_read_c(&cl,&cr,&ct);
+    dl=cl-cl0;
+    dr=cr-cr0;
+    cl0=cl;
+    cr0=cr;
+    ds=DPC/2*(dr+dl);
+    x += ds*cos(q);
+    y += ds*sin(q);
+    q += APC*(dr-dl);
+
+    *px=x;
+    *py=y;
+    *pq=q;
+    *pt=ct;
+    if (k<DMAX)
+    {
+        xi[k]=10*x;
+        yi[k]=10*y;
+        qi[k]=1000*q;
+        ti[k]=ct;
+        k++;
+    }    
+
+}
+
+void translate(double d,double vmax,double gain)
+{
+    double x0,y0,q0,x,y,q;
+    long t0,t,nt;
+    double cosq0,sinq0,dd,vc;
+    int nc,nl,nr;
+
+    estimate(&x0,&y0,&q0,&t0);
+    cosq0=cos(q0);
+    sinq0=sin(q0);
+    x=x0;
+    y=y0;
+    q=q0;
+    t=t0;
+
+    do
+    {
+        dd=cosq0*(x-x0)+sinq0*(y-y0);
+        vc=gain*(d-dd);
+        if (ABS(vc)>vmax)
+        {
+            vc=(vc<0.0)?-vmax:vmax;
+        }
+        nc=vc*MMPS;
+        ms_set_v(nc,nc);
+        estimate(&x,&y,&q,&t);
+        ms_read_v(&nl,&nr,&nt);
+    } while (ABS(d-dd)>THRESH_D||ABS(nl)>THRESH_V||ABS(nr)>THRESH_V);
+}
+
+int translate2(double d,double vmax,double gain)
+{
+    double x0,y0,q0,x,y,q,g;
+    long t0,t,nt;
+    double cosq0,sinq0,dd,vc;
+    int nc,nl,nr,s[3],check;
+
+    int i=0;    /*センサ左中右切り替え用*/
+
+    estimate(&x0,&y0,&q0,&t0);
+    cosq0=cos(q0);
+    sinq0=sin(q0);
+    x=x0;
+    y=y0;
+    q=q0;
+    t=t0;
+
+    do
+    {
+        ms_ifr(s);
+
+        /*過去WIDTH個のデータの平均でs[i]を判断*/
+        for(i=0;i<3;i++)
+        {
+            // WIDTH 個のデータを捨てるために合計から引く
+            sum_s[i] = sum_s[i] - data_s[i][bp] ;
+
+            data_s[i][bp] = s[i] ;      // 最新データを保存
+
+            sum_s[i] = sum_s[i] + s[i] ;         // 最新のデータで合計
+            
+            // 直近のデータを覚える場所を移動
+            bp++ ;
+            if ( bp >= WIDTH )
+            {
+                bp = 0 ;
+            }
+            
+            // 直近ｗIｄｔｈ個のデータ割る個数で出した平均が１以上の場合にｓを１、１未満の場合ｓを0とする
+            if((sum_s[i]/WIDTH)>=0.8)
+            {
+                s[i]=1;
+            }else{
+                s[i]=0;
+            }
+        }
+
+        check = 1*s[0]+2*s[1]+4*s[2];
+        ms_read_v(&nl,&nr,&nt);
+
+        if (check)
+        {
+            for (g = 1; g > 0; g-=0.01)
+                ms_set_v((int)(nl*g),(int)(nr*g));
+            
+            return check;   
+        }
+        
+        dd=cosq0*(x-x0)+sinq0*(y-y0);
+
+        vc=gain*(d-dd);
+
+        if (ABS(vc)>vmax)
+        {
+            vc = (vc < 0.0) ? -vmax : vmax;
+        }
+        nc=vc*MMPS;
+        ms_set_v(nc,nc);
+        estimate(&x,&y,&q,&t);
+        ms_read_v(&nl,&nr,&nt);
+    } while (ABS(d-dd)>THRESH_D||ABS(nl)>THRESH_V||ABS(nr)>THRESH_V);
+    return 0;
+}
+
+void rotate(double qd,double wmax,double gain)
+{
+  double x0,y0,q0,x,y,q;
+  long t0,t,nt;
+  double qq,wc,v,dw;
+  int nl,nr;
+
+  estimate(&x0,&y0,&q0,&t0);
+  x=x0;
+  y=y0;
+  q=q0;
+  t=t0;
+
+  do{
+  qq=q-q0;
+  wc=gain*(qd-qq);
+  if(ABS(wc)>wmax)
+  {
+    wc=(wc<0.0) ? -wmax:wmax;
+  }
+  dw=DISTANCE*wc;
+  nl=-MMPS*dw;
+  nr=MMPS*dw;
+  ms_set_v(nl,nr);
+  estimate(&x,&y,&q,&t);
+  ms_read_v(&nl,&nr,&nt);
+  }while (ABS(qd-qq)>THRESH_Q||ABS(nl)>THRESH_V||ABS(nr)>THRESH_V);
+}
+
+double seikika(double angle)
+{
+    while(angle>M_PI)   angle -= 2*M_PI;
+    while(angle<=-M_PI)   angle += 2*M_PI;
+    return angle;
+}
+
+void avoid(int j)
+{
+    if(j!=0)
+    {
+        translate(-REVERSE,VMAX,5);
+        if(j&1) rotate(-60*D2R,WMAX,5);
+        else rotate(60*D2R,WMAX,5);
+        translate(REVERSE,VMAX,5);
+    }
+} 
+\end{lstlisting}
+
+\mysubsection{実行結果}
+元々センサの入力が高感度であったため、障害物の検知が不安定であった。
+しかし、センサの値が平均化することによってそのようなノイズが減り、
+障害物検知が安定した。

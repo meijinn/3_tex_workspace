@@ -1,0 +1,167 @@
+\documentclass[a4paper,12pt]{jreport}
+%---------------------------------------------------
+\usepackage[dvipdfmx]{hyperref}
+\usepackage{pxjahyper}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{amssymb,amsmath}
+\usepackage{ascmac}
+\usepackage{float}
+\usepackage{setspace}
+\usepackage[dvipdfmx,usenames]{color}
+\usepackage{colortbl}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{setspace}
+\usepackage{subfigure}
+\usepackage{here}
+% \usepackage{redeffont}
+\usepackage{listings,jvlisting} %日本語のコメントアウトをする場合jvlisting（もしくはjlisting）が必要
+\usepackage{booktabs}
+\usepackage{titlesec}
+\usepackage{siunitx}
+\usepackage{array}
+%---------------------------------------------------
+\definecolor{bl}{rgb}{0.94,0.97,1}
+\definecolor{gr}{rgb}{0.5,0.5,0.5}
+\makeatletter
+\@removefromreset{figure}{chapter}
+\def\thefigure{\arabic{figure}}
+\makeatother
+% \makeatletter
+% \def\section{\newpage\@startsection {section}{1}{\z@}{2.3ex plus -1ex minus -.2ex}{2.3 ex plus .2ex}{\Large\bf}}
+% \makeatother
+%---------------------------------------------------
+\setlength{\textwidth}{160truemm}
+\setlength{\textheight}{240truemm}
+\setlength{\topmargin}{-14.5truemm}
+\setlength{\oddsidemargin}{-0.5truemm}
+\setlength{\headheight}{0truemm}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0cm} % 段落間
+\setlength{\itemsep}{0cm} % 項目間
+\setlength{\abovedisplayskip}{1pt}
+\setlength{\belowdisplayskip}{1pt}
+%---------------------------------------------------
+\setstretch{1.0}
+%---------------------------------------------------
+\renewcommand{\subfigtopskip}{5pt}	% 図の上の隙間。上図の副題と下図の間。
+\renewcommand{\subfigbottomskip}{0pt} % 図の下の隙間。副題と本題の間。
+\renewcommand{\subfigcapskip}{-6pt}	% 図と副題の間
+\renewcommand{\subcapsize}{\scriptsize} % 副題の文字の大きさ
+\newcommand{\mysection}[1]{\vspace{-20pt}\section{#1}}
+\newcommand{\mysubsection}[1]{\vspace{-20pt}\subsection{#1}}
+\newcommand{\mysubsubsection}[1]{\vspace{-10pt}\subsubsection{#1}}
+\renewcommand{\lstlistingname}{ソースコード}
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{3}
+%---------------------------------------------------
+% ヘッダーとフッターの設定
+\usepackage{fancyhdr}
+\rhead{\leftmark}
+\chead{}
+\lhead{\rightmark}
+\cfoot{\thepage}
+
+\titleformat{\chapter}% command
+    [display]% shape
+    {\bfseries\gtfamily\LARGE}% format
+    {第\thechapter 章}% label
+    {0.5em}% sep
+    {}% before-code
+
+\rfoot{}
+\begin{document}
+%---------------------------------------------------
+%ここからソースコードの表示に関する設定
+\lstset{
+  basicstyle={\ttfamily},
+  identifierstyle={\small},
+  commentstyle={\smallitshape},
+  keywordstyle={\small\bfseries},
+  ndkeywordstyle={\small},
+  stringstyle={\small\ttfamily},
+  frame={tb},
+  breaklines=true,
+  columns=[l]{fullflexible},
+  numbers=left,
+  xrightmargin=0zw,
+  xleftmargin=3zw,
+  numberstyle={\scriptsize},
+  stepnumber=1,
+  numbersep=1zw,
+  lineskip=-0.5ex
+}
+%ここまでソースコードの表示に関する設定
+%---------------------------------------------------
+\vspace*{2cm}
+\thispagestyle{empty}
+\begin{spacing}{1}
+\begin{center}
+{\Large 明石工業高等専門学校専攻科 \\[1truecm]
+専攻科特別研究論文} \\[3.5truecm]
+\huge 遠隔型自動運転システムの \\
+\huge ユーザビリティに関する研究 \\
+\LARGE The Research of Usability of Remote and Autonomous Driving System\\[4truecm]
+\Large ME2208 高橋 尚太郎 \\
+(機械・電子システム工学専攻) \\[1truecm]
+指導教員 野村 隼人
+\end{center}
+\tableofcontents
+\end{spacing}
+\pagenumbering{roman}
+\newpage
+\clearpage
+\pagenumbering{arabic}
+\pagestyle{fancy}
+\setlength{\headheight}{5truemm}
+
+
+\input{1_joron.tex}
+\input{2_taikan1_3.tex}
+\input{3_taikan4_7.tex}
+
+
+\chapter*{謝辞}
+
+謝辞には第何章とかの番号をつけなくてもよいので，そんなときは，
+\verb|\chapter*{ }| という具合に書きます。
+
+みなさん，ありがとう．(普通の人が見るのは，イントロと謝辞だけ...
+という説もあるから，忘れないで書く．)
+
+\appendix
+\chapter{付録があるときは}
+プログラム文とかを書いてページ数を稼ぎたいときは，
+以下のようにしてみます。
+
+\begin{verbatim}
+#include <iostream>
+using namespace std;
+int main() {
+for(int i = 1; i <= 5; i++) {
+cout << "こんにちは, C++ の世界! " << i << endl;
+}
+return 0;
+}
+\end{verbatim}
+\verb|\usepackage{ascmac}|して\verb|screen| 環境を使うと，枠がつきます。
+\begin{screen}
+\begin{verbatim}
+#include <iostream>
+using namespace std;
+int main() {
+for(int i = 1; i <= 5; i++) {
+cout << "こんにちは, C++ の世界! " << i << endl;
+}
+return 0;
+}
+\end{verbatim}
+\end{screen}
+
+\begin{thebibliography}{99}
+  \bibitem{rika} 国立天文台編，理科年表 (丸善)
+  \bibitem{ten} 天文年鑑，誠文堂新光社。
+  \end{thebibliography}
+  
+  \end{document}

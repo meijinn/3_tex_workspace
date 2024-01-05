@@ -55,6 +55,9 @@
 \renewcommand{\lstlistingname}{ソースコード}
 \setcounter{tocdepth}{3}
 \setcounter{secnumdepth}{3}
+\renewcommand{\bibname}{参考文献}
+\newcommand{\eqdef}{\overset{\rm{def}}{=}}
+\newsavebox{\mybox}
 %---------------------------------------------------
 % ヘッダーとフッターの設定
 \usepackage{fancyhdr}
@@ -120,7 +123,7 @@
 \input{1_joron.tex}
 \input{2_taikan1_3.tex}
 \input{3_taikan4_7.tex}
-
+\input{4_slam_hyouka.tex}
 
 \chapter*{謝辞}
 
@@ -160,8 +163,16 @@ return 0;
 \end{screen}
 
 \begin{thebibliography}{99}
-  \bibitem{rika} 国立天文台編，理科年表 (丸善)
-  \bibitem{ten} 天文年鑑，誠文堂新光社。
-  \end{thebibliography}
+  \bibitem{taikan:asada} 淺田樹生, 藤本雄一郎, 澤邊太志, 神原誠之と加藤博一, 「自動車運転者の適切な速度制御を促す拡張現実感」, 研究報告コンピュータビジョンとイメージメディア（CVIM）, vol. 2023-CVIM-232, no. 13, pp. 1-6, 1月 2023.
+  \bibitem{taikan:ohmae} 大前学, 「自動車の遠隔操縦における視覚情報の運転への影響評価と影響補償の為の車両制御の開発」, 科学研究費補助金研究成果報告書, 2010, 参照: 2023年3月26日. [Online]. Available at: https://koara.lib.keio.ac.jp/xoonips
+  \bibitem{taikan:speedmanagement} speed management. [Online]. Available at: https://www.itf-oecd.org/sites/default/files/docs/06speed.pdf
+  \bibitem{taikan:higashii} 東井隼斗, 北原格, 亀田能成と大田友一, 「ドライバの体感速度変化を促すバーチャルパターン」, 電子情報通信学会論文誌 D, vol. J99-D, no. 1, pp. 45-55, Jan 2016.
+  \bibitem{taikan:gitelman} V. Gitelman, F. Pesahov, R. Carmel, 「Speed perception by drivers as dependent on urban street design; a case-study」, Transactions on Transport Sciences, vol. 11, pp. 5-18, Sep 2020.
+  \bibitem{taikan:jo}D. Jo, S. Lee, Y. Lee, 「The Effect of Driving Speed on Driver's Visual Attention: Experimental Investigation」, Engineering Psychology and Cognitive Ergonomics, D. Harris, Lecture Notes in Computer Science. Cham: Springer International Publishing, 2014, pp. 174-182.
+  \bibitem{slam:gmapping}G. Grisetti, C. Stachniss, W. Burgard,  Improved Techniques for Grid Mapping With Rao-Blackwellized Particle Filters, IEEE Transactions on Robotics, vol. 23, no. 1, pp. 34-46, Feb 2007.
+  \bibitem{slam:cartographer}W. Hess, D. Kohler, H. Rapp, D. Andor, Real-time loop closure in 2D LIDAR SLAM, 2016 IEEE International Conference on Robotics and Automation (ICRA), Stockholm, Sweden: IEEE, Mar 2016, pp. 1271-1278.
+  \bibitem{slam:masuda}増田健, 「ICPアルゴリズム」, 研究報告コンピュータビジョンとイメージメディア（CVIM）, vol. 2009-CVIM-168, no. 23, pp. 1-8, Aug 2009.
+  \bibitem{slam:icp}S. Rusinkiewicz, M. Levoy, 「Efficient variants of the ICP algorithm」, Proceedings Third International Conference on 3-D Digital Imaging and Modeling, Mar 2001, pp. 145-152.
+\end{thebibliography}
   
-  \end{document}
+\end{document}

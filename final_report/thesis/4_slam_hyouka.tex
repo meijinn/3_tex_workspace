@@ -828,8 +828,8 @@ LiDARによる点群取得の実行ファイルをソースコード\ref{slam:s1
 
 \begin{lrbox}{\mybox}
   \begin{lstlisting}[caption=LiDARによる点群取得の実行ファイル,label=slam:s1]
-    <launch>
-    <node pkg="urg_node" name="urg_node" type="urg_node" output="screen" >
+<launch>
+  <node pkg="urg_node" name="urg_node" type="urg_node" output="screen" >
     <param name="serial_port" value="/dev/ttyACM0"/>
     <param name="serial_baud" value="115200"/>
     <param name="frame_id" value="base_link"/>
@@ -838,8 +838,8 @@ LiDARによる点群取得の実行ファイルをソースコード\ref{slam:s1
     <param name="publish_multiecho" value="false"/>
     <param name="angle_min" value="-1.5707963"/>
     <param name="angle_max" value="1.5707963"/>
-    </node>
-    </launch>
+  </node>
+</launch>
   \end{lstlisting}
 \end{lrbox}
 \scalebox{.9}{\usebox{\mybox}}
@@ -851,6 +851,405 @@ LiDARのスキャンによって得られるランドマークの位置情報を
 次にそれぞれのSLAMアルゴリズムにおいて、地図作成に使用した座標系の取り扱いの違いについて説明する。
 
 \subsubsection{Gmapping,Cartographer}
-GmappingとCartographerに関しては、LiDARのスキャンをロボット座標系に変換し、laser_scan_matcher\cite{slam:laser}パッケージを用いて
+GmappingとCartographerに関しては、LiDARのスキャンをロボット座標系に変換し、
+laser\verb|_|scan\verb|_|matcher\cite{slam:laser}パッケージを用いて
 オドメトリとマッチングさせることで、地図を作成する。それぞれの座標変換の概要tfツリーを図\ref{slam:tf1}、\ref{slam:tf2}に示す。
 
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=.8\linewidth]{img/slam_22.pdf}
+  \caption{Gmappingの座標変換tfツリー}
+  \label{slam:tf1}
+  \end{center}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=.8\linewidth]{img/slam_23.pdf}
+  \caption{Cartographerの座標変換tfツリー}
+  \label{slam:tf2}
+  \end{center}
+\end{figure}
+
+\clearpage
+
+\subsubsection{laser scan matcher}
+laser\verb|_|scan\verb|_|matcherは、2つの点群に関して、その位置関係を推定して合成することを行うROSのパッケージであり、
+レーザスキャンの移動の増分を取得する機能を有する。このパッケージでは、\verb|sensor_msgs/LaserScan|メッセージ間のスキャンマッチングを可能にし、レーザの推定位置を\verb|geometry_msgs/Pose2D|またはtfのメッセージとして取得する。
+このパッケージは、LiDAR以外のセンサによって得られるオドメトリ無しで使用することができる。また、複数の種類のオドメトリを追加することで、
+LiDAR自身のレーザスキャンの取得速度と精度を向上させることができる。
+
+\subsubsection{laser scan matcherの原理}
+laser\verb|_|scan\verb|_|matcherは、点群のスキャンマッチングとして有名なICPアルゴリズムの派生版であるPLICP(Point to Line ICP)が実装されている。
+
+まず、ICPアルゴリズム(Iterative Closest Point)について述べる。ICPアルゴリズムでは、2つの点群が整合するように、その位置姿勢の関係を調整する方法の1つである。ICPでは、
+図\ref{slam:icp1}に示す。ように繰り返し計算に基づいて、段階的に位置姿勢を調整する。
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=.8\linewidth]{img/slam_24.jpg}
+    \caption{ICPアルゴリズムの繰り返しの様子}
+    \label{slam:icp1}
+  \end{center}
+\end{figure}
+
+次にICPの処理の手順を説明する。ICPのアルゴリズムの繰り返しの様子を図\ref{slam:icp_process}に示す。
+\begin{enumerate}
+  \item 片側の点群Aの各点から、もう片方の点群Bで最近傍の点を探索し、対応づける。
+  \item 対応づけた点の差を最小化するように、点群の座標系の位置姿勢を調整する。
+\end{enumerate}
+
+処理1の時点で2つの点群のずれが大きいと、対応付けは間違いを含みやすくなる。この場合、処理2の調整結果は
+ずれが残る場合がある。そこで、繰り返し計算による精度向上を考える。まず処理2の後、2つの点群のずれは初期の状態より小さくなっていると仮定する。
+その状態で再度処理1を行えば、初期の状態より正確に対応付けができることが期待できる。そして、対応付けが正確にできれば処理2の位置姿勢も正確に調整できる。
+つまり、繰り返し計算を行うことで、徐々に精度を向上させることができる。
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=.8\linewidth]{img/slam_25.jpg}
+    \caption{ICPアルゴリズムの繰り返しの様子}
+    \label{slam:icp_process}
+  \end{center}
+\end{figure}
+
+ICP方式には次のような欠点がある。
+\begin{enumerate}
+  \item 初期値に依存し、初期値が悪いと反復回数が増加し、初期誤差が大きい場合は、反復結果を誤ることがある。
+  \item ICPは一次収束であり、収束速度が遅い。(探索効率を上げるためにkd-treeを使うことになる。)
+  \item 異常値やノイズが発生する。
+\end{enumerate}
+
+PLICPは、ICPアルゴリズムを改良し、標準の点と点のマッチングではなく、点と線のマッチングを行う。PLICPを図\ref{slam:plicp}に示す。
+PLICPの処理は、ICPと同じである。違いは、ICPが最近傍点を見つけて点間の距離を誤差として使用するのに対し、PLICPは2つの最近傍点を見つけることである。2つの点を接続する場合、
+点から線までの距離が誤差として使用されるため、PLICPのマッチングエラーはICPのマッチングエラーよりもはるかに小さくなる。
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=.8\linewidth]{img/slam_26.jpg}
+    \caption{PLICP}
+    \label{slam:plicp}
+  \end{center}
+\end{figure}
+
+図\ref{slam:plicp_p1p2}にPLICPによるP1とP2の位置関係を示す。
+青い点は$t-1$時間のレーザ点、茶色の線はt(壁など)、赤い点は時点実際のオブジェクト図中の同心円の実践は点間の距離誤差を表す。点P1を知るある点からの距離Dによって別の点P2の位置が決まる。P2の位置は、P1を中心とし、
+Dを半径とする円上にある。
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=.3\linewidth]{img/slam_27.jpg}
+    \caption{PLICPによるP1とP2の位置関係}
+    \label{slam:plicp_p1p2}
+  \end{center}
+\end{figure}
+
+文献\cite{slam:china}によると、PLICPがICP、IDC、MBICP等のアルゴリズムよりも精度が高く、反復回数が少なくて済むことが示されている。
+また、アルゴリズムの最適化技術により、PLICPは高速に動作することが述べられている。
+
+\subsubsection{Hector SLAM}
+図\ref{slam:tf3}にHector SLAMの座標変換のtfツリーを示す。Hector SLAMに関しては、LiDARのスキャンをロボットの座標系に変換した後に、ロボット座標系の移動履歴の座標系をtfのみでオドメトリを生成し、
+ロボット座標系に変換する前のLiDARのスキャンとマッチングさせることで、地図を作成する。
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=.8\linewidth]{img/slam_28.pdf}
+  \caption{Hector SLAMの座標変換tfツリー}
+  \label{slam:tf3}
+  \end{center}
+\end{figure}
+
+\clearpage
+
+\subsubsection{パラメータの調整}
+各SLAMパッケージのパラメータの値を示す。
+
+\begin{lrbox}{\mybox}
+\begin{lstlisting}[caption=Gmappingのレーザオドメトリのパラメータ,label=slam:s2]
+<?xml version="1.0"?>
+<launch>
+  <node pkg="tf" type="static_transform_publisher" name="base_link_to_laser" args="0.0 0 0 0.0 0.0 0.0 /base_link /laser 100" />
+//LiDARスキャン(laser)をロボット座標(base_link)に変換
+  <node pkg="laser_scan_matcher" type="laser_scan_matcher_node" name="laser_scan_matcher_node">
+    <param name="fixed_frame" value = "/odom"/>//地図座標
+    <param name="base_frame" value = "/base_link"/>//ロボット座標
+    <param name="use_cloud_input" value="false"/>
+    <param name="publish_tf" value="true"/>
+    <param name="publish_odom" value="true"/>
+    <param name="use_odom" value="false"/>
+    <param name="use_imu" value="false"/>
+    <param name="use_alpha_beta" value="true"/>
+    <param name="max_iterations" value="10"/>
+  </node>
+</launch>
+\end{lstlisting}
+\end{lrbox}
+\scalebox{.9}{\usebox{\mybox}}
+
+\begin{lrbox}{\mybox}
+\begin{lstlisting}[caption=Gmappingの座標系の設定,label=slam:s3]
+<launch>
+  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" clear_params="true">
+    <rosparam command="load" file="$(find urg_gmapping)/config/gmapping.yaml" />
+    <!-- <remap from="scan" to="front_laser/scan" /> -->
+    <param name="base_frame" value="/base_link" />
+    <param name="odom_frame" value="/odom" />
+    <param name="map_frame"  value="/map" />
+  </node>
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find urg_gmapping)/rviz_cfg/rviz_cfg.rviz"/>
+</launch>
+\end{lstlisting}
+\end{lrbox}
+\scalebox{.9}{\usebox{\mybox}}
+
+\begin{lrbox}{\mybox}
+\begin{lstlisting}[caption=Hector SLAMの座標系の設定,label=slam:s4]
+<?xml version="1.0"?>
+<launch>
+  <arg name="tf_map_scanmatch_transform_frame_name" default="scanmatcher_frame"/>
+  <arg name="base_frame" default="base_footprint"/>
+  <arg name="odom_frame" default="nav"/>
+  <arg name="pub_map_odom_transform" default="true"/>
+  <arg name="scan_subscriber_queue_size" default="5"/>
+  <arg name="scan_topic" default="scan"/>
+  <arg name="map_size" default="2048"/>
+  
+  <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
+    
+    <!-- Frame names -->
+    <param name="map_frame" value="map" />
+    <param name="base_frame" value="$(arg base_frame)" />
+    <param name="odom_frame" value="$(arg odom_frame)" />
+    
+    <!-- Tf use -->
+    <param name="use_tf_scan_transformation" value="true"/>
+    <param name="use_tf_pose_start_estimate" value="false"/>
+    <param name="pub_map_odom_transform" value="$(arg pub_map_odom_transform)"/>
+    
+    <!-- Map size / start point -->
+    <param name="map_resolution" value="0.050"/>
+    <param name="map_size" value="$(arg map_size)"/>
+    <param name="map_start_x" value="0.5"/>
+    <param name="map_start_y" value="0.5" />
+    <param name="map_multi_res_levels" value="2" />
+    
+    <!-- Map update parameters -->
+    <param name="update_factor_free" value="0.4"/>
+    <param name="update_factor_occupied" value="0.9" />    
+    <param name="map_update_distance_thresh" value="0.4"/>
+    <param name="map_update_angle_thresh" value="0.06" />
+    <param name="laser_z_min_value" value = "-1.0" />
+    <param name="laser_z_max_value" value = "1.0" />
+    
+    <!-- Advertising config --> 
+    <param name="advertise_map_service" value="true"/>
+    
+    <param name="scan_subscriber_queue_size" value="$(arg scan_subscriber_queue_size)"/>
+    <param name="scan_topic" value="$(arg scan_topic)"/>
+    
+    <param name="tf_map_scanmatch_transform_frame_name" value="$(arg tf_map_scanmatch_transform_frame_name)" />
+  </node>
+  <node pkg="tf" type="static_transform_publisher" name="map_2_odom" args="0 0 0 0 0 0 /map /odom 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="odom_2_base_footprint" args="0 0 0 0 0 0 /odom /base_footprint 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="base_footprint_2_base_link" args="0 0 0 0 0 0 /base_footprint /base_link 100"/> 
+  <node pkg="tf" type="static_transform_publisher" name="base_link_2_base_stabilized_link" args="0 0 0 0 0 0 /base_link /base_stabilized 100"/> 
+  <node pkg="tf" type="static_transform_publisher" name="base_stablized_2_base_frame" args="0 0 0 0 0 0 /base_stabilized /base_frame 100"/> 
+  <node pkg="tf" type="static_transform_publisher" name="base_frame_2_laser_link" args="0 0 0 0 0 0 /base_frame /laser 100"/> 
+  <node pkg="tf" type="static_transform_publisher" name="base_2_nav_link" args="0 0 0 0 0 0 /base_frame /nav 100"/>
+</launch>
+\end{lstlisting}
+\end{lrbox}
+
+\begin{lrbox}{\mybox}
+\begin{lstlisting}[caption=Cartographerの座標系とレーザオドメトリのパラメータの設定,label=slam:s5]
+include "map_builder.lua"
+include "trajectory_builder.lua"
+
+options = {
+  map_builder = MAP_BUILDER、
+  trajectory_builder = TRAJECTORY_BUILDER、
+  map_frame = "map"、
+  tracking_frame = "base_link"、
+  published_frame = "base_link"、
+  odom_frame = "odom"、
+  provide_odom_frame = true、
+  publish_frame_projected_to_2d = true、
+  use_odometry = false、
+  use_nav_sat = false、
+  use_landmarks = false、
+  num_laser_scans = 1、
+  num_multi_echo_laser_scans = 0、
+  num_subdivisions_per_laser_scan = 1、
+  num_point_clouds = 0、
+  lookup_transform_timeout_sec = 0.2、
+  submap_publish_period_sec = 0.3、
+  pose_publish_period_sec = 5e-3、
+  trajectory_publish_period_sec = 30e-3、
+  rangefinder_sampling_ratio = 1.、
+  odometry_sampling_ratio = 1.、
+  fixed_frame_pose_sampling_ratio = 1.、
+  imu_sampling_ratio = 1.、
+  landmarks_sampling_ratio = 1.、
+}
+
+MAP_BUILDER.use_trajectory_builder_2d = true
+
+TRAJECTORY_BUILDER_2D.min_range = 0.5
+TRAJECTORY_BUILDER_2D.max_range = 8.
+TRAJECTORY_BUILDER_2D.missing_data_ray_length = 8.5
+TRAJECTORY_BUILDER_2D.use_imu_data = false
+TRAJECTORY_BUILDER_2D.use_online_correlative_scan_matching = true
+TRAJECTORY_BUILDER_2D.real_time_correlative_scan_matcher.linear_search_window = 0.1
+TRAJECTORY_BUILDER_2D.real_time_correlative_scan_matcher.translation_delta_cost_weight = 10.
+TRAJECTORY_BUILDER_2D.real_time_correlative_scan_matcher.rotation_delta_cost_weight = 1e-1
+TRAJECTORY_BUILDER_2D.motion_filter.max_angle_radians = math.rad(0.2)
+-- for current lidar only 1 is good value
+TRAJECTORY_BUILDER_2D.num_accumulated_range_data = 1
+
+POSE_GRAPH.constraint_builder.min_score = 0.65
+POSE_GRAPH.constraint_builder.global_localization_min_score = 0.65
+POSE_GRAPH.optimization_problem.huber_scale = 1e2
+POSE_GRAPH.optimize_every_n_nodes = 35
+
+return options  
+\end{lstlisting}
+\end{lrbox}
+\scalebox{.9}{\usebox{\mybox}}
+
+\subsubsection{RVizによる環境地図の可視化}
+RVizアプリケーション上でロボットプロトタイプが生成する環境地図の可視化のプロセスについて述べる。
+SLAMのプログラムによって作成された環境地図は、ROSツールであるmap\verb|_|server によって、pgmとyamlの形式で保存される。
+Rvizアプリケーションでこれらの形式を読み込むことができる。Rvizアプリケーションでは、読み込んだ地図の測定ツールがある。
+この機能は2点間の距離を計算することができる機能である。計算したい2つの値を取得することで、測定結果をメートル単位で表示する。
+図\ref{slam:map:read}にLiDARのスキャン結果を示す。図\ref{slam:map}に環境地図の読み込み画面を示す。
+urg\verb|_|nodeでLiDARのscanトピックを生成し、SLAMプログラムがスキャンデータの変換にtfパッケージを使用して、自己位置と地図の演算を行う。
+Rvizアプリケーションはマッピングの結果をリアルタイムで表示する。
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=.8\linewidth]{img/slam_29.png}
+  \caption{LiDARのスキャン結果}
+  \label{slam:map:read}
+  \end{center}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=.6\linewidth]{img/slam_30.jpg}
+  \caption{環境地図の読み込み}
+  \label{slam:map}
+  \end{center}
+\end{figure}
+
+\section{検証}
+
+\subsection{実験}
+本研究で提案した環境地図作成システムを用いて、Gmapping、Hector SLAM、CartographerのSLAMアルゴリズムパッケージを用いて、屋内の一室を用いた環境地図の作成実験を実施した。
+今回の屋内環境は一つの部屋のみであり、仕切りなどは存在せず、部屋の基礎部分となる支柱が特徴点として検出しやすいため、SLAMの環境に適している。
+部屋の詳細は、図\ref{slam:map:measure}の平面図に示している。
+平面図には、部屋の設計寸法から値を使用している。
+図\ref{slam:map:place}は、環境地図中の辺に番号を付けたものである。
+本実験では、Gmapping、Hector SLAM、Cartographerのアルゴリズムによって生成された環境地図の寸法と実際の寸法との対応の誤差を評価する。
+方法としてRviz測定ツールによる手動測定値と実際の寸法の値を比較する。
+人が部屋の中でLiDARからなるシステムを持って歩くことで地図を作成する。この際、LiDARの方向を変える際は、ゆっくり行い、人が歩く動作をなるべく慎重に行った。
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=.8\linewidth]{img/slam_31.pdf}
+  \caption{実際の部屋の寸法図}
+  \label{slam:map:measure}
+  \end{center}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=.8\linewidth]{img/slam_32.jpg}
+  \caption{寸法の測定箇所}
+  \label{slam:map:place}
+  \end{center}
+\end{figure}
+
+\clearpage
+
+\subsection{結果}
+Gmapping、Hector SLAM、CartographerともにRVizの画面上に環境地図が描画された。
+図\ref{slam:map:gmapping}\verb|～|\ref{slam:map:cartographer}に各アルゴリズムによって生成された環境地図を示す。
+内界センサによるオドメトリを用いず、LiDARのみでSLAMを行っているが、部屋の特徴を的確にとらえており、実際の部屋と同様に支柱の構造
+と収納棚が確認され、非対称な形状が環境地図に反映されていることが分かる。平面地図の計測の結果を表\ref{slam:table4}に示す。
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=.8\linewidth]{img/slam_33.jpg}
+  \caption{Gmapping}
+  \label{slam:map:gmapping}
+  \end{center}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=.8\linewidth]{img/slam_34.png}
+  \caption{HectorSLAM}
+  \label{slam:map:hectorslam}
+  \end{center}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=.8\linewidth]{img/slam_35.jpg}
+  \caption{Cartographer}
+  \label{slam:map:cartographer}
+  \end{center}
+\end{figure}
+
+\begin{table}[h]
+  \centering
+  \caption{RVizの測定ツールによる測定結果}
+  \scalebox{.75}{
+  \begin{tabular}{@{}crrrrrrr@{}}
+  \toprule
+  No                   & \multicolumn{4}{c}{測定値(cm)}                                                                                               & \multicolumn{3}{c}{誤差(cm)}                                                                       \\ \midrule
+  \multicolumn{1}{l}{} & \multicolumn{1}{c}{Gmapping} & \multicolumn{1}{c}{HectorSLAM} & \multicolumn{1}{c}{Cartographer} & \multicolumn{1}{c}{実寸} & \multicolumn{1}{c}{Gmapping} & \multicolumn{1}{c}{HectorSLAM} & \multicolumn{1}{c}{Cartographer} \\
+  1                    & 361.531                      & 356.567                        & 359.158                          & 356.5                  & 5.031                        & 0.067                          & 2.658                            \\
+  2                    & 47.8064                      & 59.3467                        & 51.7346                          & 52.5                   & -4.6936                      & 6.8467                         & -0.7654                          \\
+  3                    & 362.027                      & 333.141                        & 359.743                          & 356.5                  & 5.527                        & -23.359                        & 3.243                            \\
+  4                    & 338.146                      & 331.471                        & 333.615                          & 331.5                  & 6.646                        & -0.029                         & 2.115                            \\
+  5                    & 1067.5                       & 1083.04                        & 1073.81                          & 1074.3                 & 5.845                        & 4.427                          & 3.108                            \\
+  6                    & 309.045                      & 307.627                        & 306.308                          & 303.2                  & 5.845                        & 4.427                          & 3.108                            \\
+  \multicolumn{5}{c}{平均二乗誤差}  
+\label{slam:table4}                                                                                                                     & 5.6051                       & 19.150                         & 0.90262                          \\ \bottomrule
+\end{tabular}}
+\end{table}
+
+\clearpage
+
+実験番号1、2の実際の寸法が356.5 \si{[cm]}、52.50 \si{[cm]}であることに対して、Gmappingの測定値が361.531 \si{[cm]}、47.8064 \si{[cm]}であったためRviz測定ツールによる測定値と実際の寸法との誤差は5.031 \si{[cm]}、-4.6936 \si{[cm]}となる。
+実験番号2 \verb|～|7で示された異なる場所で同様に測定したところ、平均二乗誤差は5.605 \si{[cm]}であった。
+このことからlaser\verb|_|scan\verb|_|matcherを使用するGmappingでは5.605 \si{[cm]}の誤差で部屋の地図を作成できることが分かる。
+Hector SLAMによって生成された地図の場合、実験番号1、2の測定値が356.567 \si{[cm]}, 59.3467 \si{[cm]}の測定値が得られる。
+他も同様に359.743 \si{[cm]}、333.615 \si{[cm]}、1073.81 \si{[cm]}、306.308 \si{[cm]}の結果が得られた。
+これらの平均二乗誤差は、19.15 \si{[cm]} であり、Hector SLAMによる地図の寸法にばらつきがあることが分かる。
+また、Hector SLAMアルゴリズムを使用した場合、実験番号1の上面と、2の横面、下面に点群のずれが生じている。
+Hector SLAMやCartographerは、地図作成の際のLiDARの方向転換や、前進速度等が少しでも早くなると、地図に大きな歪みが生じた。
+Hector SLAMは、地図が歪むと修正されない。Cartographerや、Gmappingは、限度があるものの、歪みは修正される。
+Gmappingは、地図作成の際のLiDARの方向転換や、前進速度等が速くの影響をほとんど受けなかった。
+Cartographerアルゴリズムによって生成された地図の場合、どの実験番号でも誤差が高々3\si{[cm]} 程度であり、
+平均二乗誤差が0.90 \si{[cm]} と非常にばらつきが少なく、誤差が少ないことが明らかになった。
+
+\section{考察}
+実験の結果より、LiDAR以外の内界センサを用いず、LiDARのみによって地図の生成を行うことが可能であると言える。
+特に、平均二乗誤差が最も少ない、Cartographerが他のアルゴリズムと比べて、精度の良い地図であると考えられる。
+次点にGmappingの地図の精度が高く、Hector SLAMが最も精度が低い地図となった。
+しかし、測定の際の動作を丁寧に行う必要があるアルゴリズムと、測定の際の外乱に強いアルゴリズムが存在することが明らかになった。
+今回の実験では、LiDAR計測方向の転換や、歩きながら地図を作成する動作を慎重に実施した、Hector SLAMは、これらの動作を慎重に行わなかった場合、正確な地図を作成することが不可能であった。
+これは、LiDARの筐体が移動する速度が速い場合、現在の測定データの端点が、それまでに読み込んで生成した地図のデータ(過去の測定データ)と離れすぎてしまい正しくスキャンマッチングができなくなったためだと考えられる。
+また、移動ロボットの現在位置が生成した環境地図から大きくずれてしまい、自己位置を見失う現象が生じた。
+その後、復帰することがなかったため、正しいスキャンマッチングができず、別の地形と判断されたためだと考えられる。
+Cartographerは、平均二乗誤差が最も少ないが、LiDARの筐体を移動させる速度を速くすることにより、地図が歪む現象が起きた、その後、地図は修正されるが、歪みの分と、元の地図との間の位置へと修正されるが、歪みの量が大きいと、復帰が不可能である。
+Gmappingは、移動速度を速くしても、地図の歪みが比較的小さく、現在のスキャンに歪みが含まれても、元の地図の位置とマッチングするように修正が行われる。
+これは、他のSLAMアルゴリズムと比べて計算量が少なく、復帰に要する時間が少なかったためだと考えられる。よって、ロボットに搭載して、移動させながら地図を作成する場合、Gmappingを用いることが、妥当であると考えられる。
+
+\clearpage
+
+\section{おわりに}
+LiDAR(URG-04LX-01)のみでの地図生成が可能であることを明らかにした。特に、Hector SLAMよりもCartographerやGmappingで生成した地図の精度が 70.7\% ～ 95.3\%
+程良いことが明らかになった。また、LiDARによる計測に要する応答性は、Gmappingが、他のアルゴリズムと比べて優れていることが明らかになった。
+これらの観点から、比較的、並進速度や角速度が速いロボットの動作において、URG-04LX-01のみで、SLAMを行う場合は、Gmappingを用いることが適切である。
+今後は、Gmappingを用いて、4輪自律移動ラジコンカーの開発を行う。

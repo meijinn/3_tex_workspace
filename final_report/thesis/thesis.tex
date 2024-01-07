@@ -21,6 +21,7 @@
 \usepackage{titlesec}
 \usepackage{siunitx}
 \usepackage{array}
+\usepackage{multirow}
 %---------------------------------------------------
 \definecolor{bl}{rgb}{0.94,0.97,1}
 \definecolor{gr}{rgb}{0.5,0.5,0.5}
@@ -124,14 +125,20 @@
 \input{2_taikan1_3.tex}
 \input{3_taikan4_7.tex}
 \input{4_slam_hyouka.tex}
+\input{5_autonomous.tex}
+\input{6_soukatsu.tex}
 
+
+\pagestyle{plain}
 \chapter*{謝辞}
 
-謝辞には第何章とかの番号をつけなくてもよいので，そんなときは，
-\verb|\chapter*{ }| という具合に書きます。
-
-みなさん，ありがとう．(普通の人が見るのは，イントロと謝辞だけ...
-という説もあるから，忘れないで書く．)
+私の研究のモチベーションは、中之島ロボットチャレンジを観戦することで、
+将来的に自律移動ロボットやLiDARの開発に携わりたいと考えたことです。
+今回は、縁あって北陽電機株式会社様よりLiDARを貸与頂き、
+自らの開発アイデアを研究活動で実現することができました。
+本研究は、LiDARの使用技術の勉強並びに、北陽電機株式会社様への就職を目的として取り組みました。
+北陽電機株式会社R\&D室 嶋地様、和田様、木元様、岡本様には大変お世話になりました。
+北陽電機株式会社様への報告を以て、専攻科の研究を総括とさせて頂きます。
 
 \appendix
 \chapter{付録があるときは}
@@ -173,6 +180,7 @@ return 0;
   \bibitem{slam:cartographer}W. Hess, D. Kohler, H. Rapp, D. Andor, Real-time loop closure in 2D LIDAR SLAM, 2016 IEEE International Conference on Robotics and Automation (ICRA), Stockholm, Sweden: IEEE, Mar 2016, pp. 1271-1278.
   \bibitem{slam:masuda}増田健, 「ICPアルゴリズム」, 研究報告コンピュータビジョンとイメージメディア（CVIM）, vol. 2009-CVIM-168, no. 23, pp. 1-8, Aug 2009.
   \bibitem{slam:icp}S. Rusinkiewicz, M. Levoy, 「Efficient variants of the ICP algorithm」, Proceedings Third International Conference on 3-D Digital Imaging and Modeling, Mar 2001, pp. 145-152.
+  \bibitem{slam:china}点云配准方法 PLICP CSDN博客. 参照: 2023年12月27日. [Online]. Available at: \verb|https://blog.csdn.net/weixin_40863346/article/details/102731212|
 \end{thebibliography}
   
 \end{document}

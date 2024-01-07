@@ -1,0 +1,157 @@
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces 視野角と体感速度の関係\cite {taikan:speedmanagement}}}{6}{figure.2.1}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces 体感速度の原理}}{8}{figure.2.2}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces 体感速度の実験環境}}{10}{figure.2.3}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {RCカーの走行環境}}}{10}{figure.2.3}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {DS上で再現したRCカーの走行環境}}}{10}{figure.2.3}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces 単位時間当たりに通過するポールの数の確認}}{10}{figure.2.4}%
+\contentsline {figure}{\numberline {2.5}{\ignorespaces DS環境の寸法:全体}}{11}{figure.2.5}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {DS上コースの寸法:全体}}}{11}{figure.2.5}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {DS上コースの寸法:全長}}}{11}{figure.2.5}%
+\contentsline {figure}{\numberline {2.6}{\ignorespaces DS環境の寸法:詳細}}{12}{figure.2.6}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {DS上コースの寸法:障害物}}}{12}{figure.2.6}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {DS上コースの寸法:道幅}}}{12}{figure.2.6}%
+\contentsline {figure}{\numberline {2.7}{\ignorespaces 実験の様子}}{13}{figure.2.7}%
+\contentsline {figure}{\numberline {2.8}{\ignorespaces クロップ手順1}}{16}{figure.2.8}%
+\contentsline {figure}{\numberline {2.9}{\ignorespaces クロップ手順2}}{16}{figure.2.9}%
+\contentsline {figure}{\numberline {2.10}{\ignorespaces クロップ前後の見え方の変化}}{17}{figure.2.10}%
+\contentsline {figure}{\numberline {2.11}{\ignorespaces ピクセルの移動距離の考え方}}{18}{figure.2.11}%
+\contentsline {figure}{\numberline {2.12}{\ignorespaces ディスプレイ長さの概要と諸条件}}{19}{figure.2.12}%
+\contentsline {figure}{\numberline {2.13}{\ignorespaces 基準視野角とその導出の諸条件}}{20}{figure.2.13}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {水平方向}}}{20}{figure.2.13}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {垂直方向}}}{20}{figure.2.13}%
+\contentsline {figure}{\numberline {2.14}{\ignorespaces 映像クロップによる視野角とその導出の諸条件}}{21}{figure.2.14}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {水平方向}}}{21}{figure.2.14}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {垂直方向}}}{21}{figure.2.14}%
+\contentsline {figure}{\numberline {2.15}{\ignorespaces 視野角の違いによるポール間ピクセル数の違い}}{22}{figure.2.15}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {基準視野角}}}{22}{figure.2.15}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {変化視野角(増加)}}}{22}{figure.2.15}%
+\contentsline {figure}{\numberline {2.16}{\ignorespaces 視野角に関する幾何学}}{23}{figure.2.16}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {基準視野角の幾何学}}}{23}{figure.2.16}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {変化視野角の幾何学}}}{23}{figure.2.16}%
+\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {$n_{p_{\to }p}$について}}}{23}{figure.2.16}%
+\contentsline {figure}{\numberline {2.17}{\ignorespaces DSの視野角設定}}{26}{figure.2.17}%
+\contentsline {figure}{\numberline {2.18}{\ignorespaces 視野角の違いによるポール間ピクセル数の違い}}{27}{figure.2.18}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {基準視野角}}}{27}{figure.2.18}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {変化視野角(増加)}}}{27}{figure.2.18}%
+\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {変化視野角(増加)}}}{27}{figure.2.18}%
+\contentsline {figure}{\numberline {2.19}{\ignorespaces 水平視野角と体感速度の特性}}{28}{figure.2.19}%
+\contentsline {figure}{\numberline {2.20}{\ignorespaces クロップ率と体感速度の特性}}{29}{figure.2.20}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces 全スキャンを同じ位置においた結果\cite {slam:nyumon}}}{34}{figure.3.1}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces オドメトリによる地図\cite {slam:nyumon}}}{34}{figure.3.2}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces SLAMによる地図(ループ閉じ込みなし)\cite {slam:nyumon}}}{35}{figure.3.3}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces SLAMによる地図(ループ閉じ込みあり)\cite {slam:nyumon}}}{35}{figure.3.4}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces ロボットで地図を作る様子\cite {slam:nyumon}}}{38}{figure.3.5}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces ロボットとランドマークの位置推定\cite {slam:nyumon}}}{39}{figure.3.6}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces ランドマーク位置の推定とロボット位置の推定\cite {slam:nyumon}}}{39}{figure.3.7}%
+\contentsline {figure}{\numberline {3.8}{\ignorespaces 外界センサデータが一度に大量に得られる場合\cite {slam:nyumon}}}{42}{figure.3.8}%
+\contentsline {figure}{\numberline {3.9}{\ignorespaces ロボットの軌跡のループ\cite {slam:nyumon}}}{46}{figure.3.9}%
+\contentsline {figure}{\numberline {3.10}{\ignorespaces ループ閉じ込みの様子\cite {slam:nyumon}}}{47}{figure.3.10}%
+\contentsline {figure}{\numberline {3.11}{\ignorespaces 各時刻において作成された地図}}{49}{figure.3.11}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {時刻$t$までに作成された地図}}}{49}{figure.3.11}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {時刻$t-1$までに作成された地図}}}{49}{figure.3.11}%
+\contentsline {figure}{\numberline {3.12}{\ignorespaces サンプルの撒き方の決定}}{50}{figure.3.12}%
+\contentsline {figure}{\numberline {3.13}{\ignorespaces 尤度による重みの計算}}{50}{figure.3.13}%
+\contentsline {figure}{\numberline {3.14}{\ignorespaces 事前推定を考慮した尤度の調整}}{51}{figure.3.14}%
+\contentsline {figure}{\numberline {3.15}{\ignorespaces 自己位置の仮定}}{51}{figure.3.15}%
+\contentsline {figure}{\numberline {3.16}{\ignorespaces 地図の更新}}{51}{figure.3.16}%
+\contentsline {figure}{\numberline {3.17}{\ignorespaces 自己位置推定結果の確定}}{52}{figure.3.17}%
+\contentsline {figure}{\numberline {3.18}{\ignorespaces 粒子のリサンプリング}}{52}{figure.3.18}%
+\contentsline {figure}{\numberline {3.19}{\ignorespaces 粒子の多様性の考慮}}{52}{figure.3.19}%
+\contentsline {figure}{\numberline {3.20}{\ignorespaces 環境地図作成システムの概要}}{59}{figure.3.20}%
+\contentsline {figure}{\numberline {3.21}{\ignorespaces Gmappingの座標変換tfツリー}}{61}{figure.3.21}%
+\contentsline {figure}{\numberline {3.22}{\ignorespaces Cartographerの座標変換tfツリー}}{62}{figure.3.22}%
+\contentsline {figure}{\numberline {3.23}{\ignorespaces ICPアルゴリズムの繰り返しの様子}}{63}{figure.3.23}%
+\contentsline {figure}{\numberline {3.24}{\ignorespaces ICPアルゴリズムの繰り返しの様子}}{64}{figure.3.24}%
+\contentsline {figure}{\numberline {3.25}{\ignorespaces PLICP\cite {slam:plicp}}}{64}{figure.3.25}%
+\contentsline {figure}{\numberline {3.26}{\ignorespaces PLICPによるP1とP2の位置関係\cite {slam:china}}}{65}{figure.3.26}%
+\contentsline {figure}{\numberline {3.27}{\ignorespaces Hector SLAMの座標変換tfツリー}}{66}{figure.3.27}%
+\contentsline {figure}{\numberline {3.28}{\ignorespaces LiDARのスキャン結果}}{69}{figure.3.28}%
+\contentsline {figure}{\numberline {3.29}{\ignorespaces 環境地図の読み込み}}{69}{figure.3.29}%
+\contentsline {figure}{\numberline {3.30}{\ignorespaces 実際の部屋の寸法図}}{70}{figure.3.30}%
+\contentsline {figure}{\numberline {3.31}{\ignorespaces 寸法の測定箇所}}{71}{figure.3.31}%
+\contentsline {figure}{\numberline {3.32}{\ignorespaces Gmapping}}{72}{figure.3.32}%
+\contentsline {figure}{\numberline {3.33}{\ignorespaces HectorSLAM}}{73}{figure.3.33}%
+\contentsline {figure}{\numberline {3.34}{\ignorespaces Cartographer}}{74}{figure.3.34}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces 後退動作}}{79}{figure.4.1}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces システム構成}}{81}{figure.4.2}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces ハンドルによるサーボモータの制御パルス値の取得}}{82}{figure.4.3}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces ペダルによるDCモータの制御パルス値の取得}}{83}{figure.4.4}%
+\contentsline {figure}{\numberline {4.5}{\ignorespaces ROSのスタック構成}}{85}{figure.4.5}%
+\contentsline {figure}{\numberline {4.6}{\ignorespaces ROSのピアツーピア設計例}}{86}{figure.4.6}%
+\contentsline {figure}{\numberline {4.7}{\ignorespaces ROSのコンピューティングレベル}}{87}{figure.4.7}%
+\contentsline {figure}{\numberline {4.8}{\ignorespaces トピックを利用した情報共有}}{89}{figure.4.8}%
+\contentsline {figure}{\numberline {4.9}{\ignorespaces Navigation Stackの概要}}{92}{figure.4.9}%
+\contentsline {figure}{\numberline {4.10}{\ignorespaces Transform Treeの説明}}{92}{figure.4.10}%
+\contentsline {figure}{\numberline {4.11}{\ignorespaces レーザスキャンのパラメータ値}}{93}{figure.4.11}%
+\contentsline {figure}{\numberline {4.12}{\ignorespaces オドメトリの座標系}}{94}{figure.4.12}%
+\contentsline {figure}{\numberline {4.13}{\ignorespaces 占有格子地図}}{95}{figure.4.13}%
+\contentsline {figure}{\numberline {4.14}{\ignorespaces パーティクルを用いた予測}}{96}{figure.4.14}%
+\contentsline {figure}{\numberline {4.15}{\ignorespaces 尤度の計算}}{96}{figure.4.15}%
+\contentsline {figure}{\numberline {4.16}{\ignorespaces リサンプリング}}{96}{figure.4.16}%
+\contentsline {figure}{\numberline {4.17}{\ignorespaces diffモデル}}{97}{figure.4.17}%
+\contentsline {figure}{\numberline {4.18}{\ignorespaces ガウシアンノイズモデル}}{98}{figure.4.18}%
+\contentsline {figure}{\numberline {4.19}{\ignorespaces 障害物対策モデル}}{98}{figure.4.19}%
+\contentsline {figure}{\numberline {4.20}{\ignorespaces センサノイズの分類}}{99}{figure.4.20}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {センサの最大距離ノイズ}}}{99}{figure.4.20}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {ランダムノイズ}}}{99}{figure.4.20}%
+\contentsline {figure}{\numberline {4.21}{\ignorespaces 融合尤度モデル}}{99}{figure.4.21}%
+\contentsline {figure}{\numberline {4.22}{\ignorespaces ガウシアンノイズ}}{100}{figure.4.22}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {ガウシアンノイズの尤度の関数}}}{100}{figure.4.22}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {ガウシアンノイズの尤度の分布}}}{100}{figure.4.22}%
+\contentsline {figure}{\numberline {4.23}{\ignorespaces ランダムノイズ}}{100}{figure.4.23}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {ランダムノイズの尤度}}}{100}{figure.4.23}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {ランダムノイズの尤度の分布}}}{100}{figure.4.23}%
+\contentsline {figure}{\numberline {4.24}{\ignorespaces TEBの模式図}}{101}{figure.4.24}%
+\contentsline {figure}{\numberline {4.25}{\ignorespaces 疎行列最適化}}{102}{figure.4.25}%
+\contentsline {figure}{\numberline {4.26}{\ignorespaces 最適化前}}{102}{figure.4.26}%
+\contentsline {figure}{\numberline {4.27}{\ignorespaces 最適化後}}{103}{figure.4.27}%
+\contentsline {figure}{\numberline {4.28}{\ignorespaces auto resizing後}}{103}{figure.4.28}%
+\contentsline {figure}{\numberline {4.29}{\ignorespaces TEBの最適化プロセス}}{104}{figure.4.29}%
+\contentsline {figure}{\numberline {4.30}{\ignorespaces 初期軌道生成から最適化までの処理}}{105}{figure.4.30}%
+\contentsline {figure}{\numberline {4.31}{\ignorespaces 本研究で使用したRCカーの改造}}{105}{figure.4.31}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {改良前のRCカー(パラレルステアリングジオメトリ)}}}{105}{figure.4.31}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {DS上コースの寸法:全長}}}{105}{figure.4.31}%
+\contentsline {figure}{\numberline {4.32}{\ignorespaces 切れ角とサーボモータの制御パルス値の特性取得}}{106}{figure.4.32}%
+\contentsline {figure}{\numberline {4.33}{\ignorespaces アッカーマンステアリングジオメトリの運動学\cite {auto:teb:ackermann}}}{106}{figure.4.33}%
+\contentsline {figure}{\numberline {4.34}{\ignorespaces ステアリング角度とモータの制御パルス値へと変換した特性}}{107}{figure.4.34}%
+\contentsline {figure}{\numberline {4.35}{\ignorespaces コストマップ}}{108}{figure.4.35}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {costmapの概要}}}{108}{figure.4.35}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {2次元のcostmap}}}{108}{figure.4.35}%
+\contentsline {figure}{\numberline {4.36}{\ignorespaces マークのクリア}}{109}{figure.4.36}%
+\contentsline {figure}{\numberline {4.37}{\ignorespaces コストマップの設定変数}}{110}{figure.4.37}%
+\contentsline {figure}{\numberline {4.38}{\ignorespaces waypointの保存と可視化}}{111}{figure.4.38}%
+\contentsline {figure}{\numberline {4.39}{\ignorespaces 自動運転切り替え機能のノード(トピック)}}{112}{figure.4.39}%
+\contentsline {figure}{\numberline {4.40}{\ignorespaces 自動運転機能の全体ノード}}{112}{figure.4.40}%
+\contentsline {figure}{\numberline {4.41}{\ignorespaces 手動操作時のノード(トピック)}}{113}{figure.4.41}%
+\contentsline {figure}{\numberline {4.42}{\ignorespaces 手動操作時の全体ノード}}{113}{figure.4.42}%
+\contentsline {figure}{\numberline {4.43}{\ignorespaces 仕切りの無い走行コース}}{114}{figure.4.43}%
+\contentsline {figure}{\numberline {4.44}{\ignorespaces ブレーキテストコース}}{114}{figure.4.44}%
+\contentsline {figure}{\numberline {4.45}{\ignorespaces 設定したWaypoint}}{115}{figure.4.45}%
+\contentsline {figure}{\numberline {4.46}{\ignorespaces 方向転換のテストコース}}{116}{figure.4.46}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {方向転換のテストコース}}}{116}{figure.4.46}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {方向転換のパターン1}}}{116}{figure.4.46}%
+\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {方向転換のパターン2}}}{116}{figure.4.46}%
+\contentsline {figure}{\numberline {4.47}{\ignorespaces 方向転換の自律移動画面}}{116}{figure.4.47}%
+\contentsline {figure}{\numberline {4.48}{\ignorespaces アンケート}}{117}{figure.4.48}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {アンケート1}}}{117}{figure.4.48}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {アンケート2}}}{117}{figure.4.48}%
+\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {アンケート3}}}{117}{figure.4.48}%
+\contentsline {subfigure}{\numberline {(d)}{\ignorespaces {アンケート4}}}{117}{figure.4.48}%
+\contentsline {figure}{\numberline {4.49}{\ignorespaces アンケート}}{118}{figure.4.49}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {アンケート1}}}{118}{figure.4.49}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {アンケート2}}}{118}{figure.4.49}%
+\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {アンケート3}}}{118}{figure.4.49}%
+\contentsline {subfigure}{\numberline {(d)}{\ignorespaces {アンケート4}}}{118}{figure.4.49}%
+\contentsline {figure}{\numberline {4.50}{\ignorespaces ブレーキテストの結果}}{119}{figure.4.50}%
+\contentsline {figure}{\numberline {4.51}{\ignorespaces 方向転換のパターン改良}}{119}{figure.4.51}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {方向転換の改良1}}}{119}{figure.4.51}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {方向転換の改良2}}}{119}{figure.4.51}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces 手動・自動運転引継ぎシステム}}{122}{figure.5.1}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces 体感速度モデル}}{123}{figure.5.2}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {視野角と体感速度の特性}}}{123}{figure.5.2}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {クロップ率と体感速度の特性}}}{123}{figure.5.2}%

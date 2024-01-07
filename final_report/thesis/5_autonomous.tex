@@ -239,7 +239,7 @@ ROSのコンピューティングレベルでは、ノード、マスター、�
 
 \begin{enumerate}
   \item ノード\\
-  処理機能の基本単位で、処理プロセスを表す。図\ref{auto:copute}にROSのコンピューティングレベルを示す。
+  処理機能の基本単位で、処理プロセスを表す。図\ref{auto:compute}にROSのコンピューティングレベルを示す。
   ROSでは、プロセス間のデータ通信を実現するために、各プロセスをノードで表現する必要がある。
   通常では、ROSシステムは様々なノードより提供されている機能で構成されているが、ノードの設計方針として、複雑な機能表現、あるいは、たくさんの機能を持たせるのではなく、できるだけ単一機能にする、ということがある。
   そして、このように単純化されたノードを組み合わせることにより、より複雑な機能を実現する。
@@ -675,7 +675,7 @@ Navigation Stackから並進速度・角速度の計算要求があるたび、�
   \end{center}
 \end{figure}
 \item 初期軌道生成\\
-TEBでは軌道を連続的に変形するため、障害物をまたぐような変形が行われない。そこで、複数の軌道を扱えるようにするために、HomotopyClassPlannerが使われる。Homotopy Classには以下のような定義がある。
+TEBでは軌道を連続的に変形するため、障害物をまたぐような変形が行われない。そこで、複数の軌道を扱えるようにするために、HomotopyClassPlanner\cite{auto:teb3}が使われる。Homotopy Classには以下のような定義がある。
 \begin{enumerate}
   \item 定義1:(Homotopy)同じ始点と終点を結ぶ二つの軌道は、一方が障害物と交差することなく他方に連続的に変形できる。
   \item 定義2:(Homotopy Class)互いにHomotopyである全ての軌道の集合
@@ -747,7 +747,7 @@ Navigaton Stackの軌道計画に与える制約条件を求めるために、
 \begin{figure}[h]
   \begin{center}
     \includegraphics[width=.3\linewidth]{img/auto_36.png}
-    \caption{アッカーマンステアリングジオメトリの運動学}
+    \caption{アッカーマンステアリングジオメトリの運動学\cite{auto:teb:ackermann}}
     \label{auto:ackerk}
   \end{center}  
 \end{figure}
@@ -767,7 +767,7 @@ Navigaton Stackの軌道計画に与える制約条件を求めるために、
 
 
 \subsubsection{コストマップ}
-\verb|costmap_2d|パッケージ\ref{auto:costmap2d}は、ロボットが占有格子の形式でナビゲーションを行う場所に関する情報を提供する。
+\verb|costmap_2d|パッケージ\cite{auto:costmap2d}は、ロボットが占有格子の形式でナビゲーションを行う場所に関する情報を提供する。
 コストマップは、制約マップのセンサデータと情報を使用して、\verb|costmap_2d::Costmap2D|ROSオブジェクトを介して、
 空間の障害物に関する情報を保存および更新する。つまり、障害物の判定は"列"単位でのみ行うことができる。
 たとえば、XY平面で同じ位置にあるがZ位置が異なるテーブルと靴の場合\verb|costmap_2d::Costmap2D|ROSオブジェクトのコストマップの対応するセルのコスト値は同じになる。

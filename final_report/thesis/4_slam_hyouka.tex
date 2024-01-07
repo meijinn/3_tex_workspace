@@ -38,7 +38,7 @@ SLAMの入力はセンサデータであり、出力はロボットの移動軌�
 \begin{figure}[h]
   \begin{center}
   \includegraphics[width=.8\linewidth]{img/slam_1.pdf}
-  \caption{全スキャンを同じ位置においた結果}
+  \caption{全スキャンを同じ位置においた結果\cite{slam:nyumon}}
   \label{slam:scan}
   \end{center}
 \end{figure}
@@ -46,7 +46,7 @@ SLAMの入力はセンサデータであり、出力はロボットの移動軌�
 \begin{figure}[h]
   \begin{center}
   \includegraphics[width=.8\linewidth]{img/slam_2.pdf}
-  \caption{オドメトリによる地図}
+  \caption{オドメトリによる地図\cite{slam:nyumon}}
   \label{slam:odometry}
   \end{center}
 \end{figure}
@@ -54,7 +54,7 @@ SLAMの入力はセンサデータであり、出力はロボットの移動軌�
 \begin{figure}[h]
   \begin{center}
   \includegraphics[width=.8\linewidth]{img/slam_3.pdf}
-  \caption{SLAMによる地図(ループ閉じ込みなし)}
+  \caption{SLAMによる地図(ループ閉じ込みなし)\cite{slam:nyumon}}
   \label{slam:slam}
   \end{center}
 \end{figure}
@@ -62,7 +62,7 @@ SLAMの入力はセンサデータであり、出力はロボットの移動軌�
 \begin{figure}[h]
   \begin{center}
   \includegraphics[width=.8\linewidth]{img/slam_4.pdf}
-  \caption{SLAMによる地図(ループ閉じ込みあり)}
+  \caption{SLAMによる地図(ループ閉じ込みあり)\cite{slam:nyumon}}
   \label{slam:slam_loop}
   \end{center}
 \end{figure}
@@ -136,7 +136,7 @@ GPSなど、絶対位置が直接得られるセンサや装置は使わない�
 \begin{figure}[h]
   \begin{center}
   \includegraphics[width=\linewidth]{img/slam_5.pdf}
-  \caption{ロボットで地図を作る様子}
+  \caption{ロボットで地図を作る様子\cite{slam:nyumon}}
   \label{slam:chizu1}
   \end{center}
 \end{figure}
@@ -154,7 +154,7 @@ $\bm{q_2}=(q_{2,x},q_{2,y})^{\rm{T}}$ また、センサの計測データ(セ�
 \begin{figure}[h]
   \begin{center}
   \includegraphics[width=\linewidth]{img/slam_6.pdf}
-  \caption{ロボットとランドマークの位置推定}
+  \caption{ロボットとランドマークの位置推定\cite{slam:nyumon}}
   \label{slam:chizu2}
   \end{center}
 \end{figure}
@@ -162,7 +162,7 @@ $\bm{q_2}=(q_{2,x},q_{2,y})^{\rm{T}}$ また、センサの計測データ(セ�
 \begin{figure}[h]
   \begin{center}
   \includegraphics[width=\columnwidth]{img/slam_7.pdf}
-  \caption{ランドマーク位置の推定とロボット位置の推定}
+  \caption{ランドマーク位置の推定とロボット位置の推定\cite{slam:nyumon}}
   \label{slam:suitei}
   \end{center}
 \end{figure}
@@ -289,7 +289,7 @@ $2\times 6+3\times 2=18$個となり、変数より式の方が多い連立方�
 \begin{figure}[h]
   \begin{center}
   \includegraphics[width=.6\columnwidth]{img/slam_8.pdf}
-  \caption{外界センサデータが一度に大量に得られる場合}
+  \caption{外界センサデータが一度に大量に得られる場合\cite{slam:nyumon}}
   \label{slam:sensor}
   \end{center}
 \end{figure}
@@ -416,7 +416,7 @@ SLAMでロボット位置の累積誤差をオドメトリ単体の場合より�
 \begin{figure}[h]
   \begin{center}
   \includegraphics[width=.8\linewidth]{img/slam_9.pdf}
-  \caption{ロボットの軌跡のループ}
+  \caption{ロボットの軌跡のループ\cite{slam:nyumon}}
   \label{slam:loop_kiseki}
   \end{center}
 \end{figure}
@@ -440,7 +440,7 @@ SLAMでロボット位置の累積誤差をオドメトリ単体の場合より�
   \begin{figure}[h]
     \begin{center}
     \includegraphics[width=.8\linewidth]{img/slam_10.pdf}
-    \caption{ループ閉じ込みの様子}
+    \caption{ループ閉じ込みの様子\cite{slam:nyumon}}
     \label{slam:loop_detect}
     \end{center}
   \end{figure}
@@ -880,7 +880,7 @@ laser\verb|_|scan\verb|_|matcherは、2つの点群に関して、その位置�
 LiDAR自身のレーザスキャンの取得速度と精度を向上させることができる。
 
 \subsubsection{laser scan matcherの原理}
-laser\verb|_|scan\verb|_|matcherは、点群のスキャンマッチングとして有名なICPアルゴリズムの派生版であるPLICP(Point to Line ICP)が実装されている。
+laser\verb|_|scan\verb|_|matcherは、点群のスキャンマッチングとして有名なICPアルゴリズム\cite{slam:icp}の派生版であるPLICP(Point to Line ICP)\cite{slam:plicp}が実装されている。
 
 まず、ICPアルゴリズム(Iterative Closest Point)について述べる。ICPアルゴリズムでは、2つの点群が整合するように、その位置姿勢の関係を調整する方法の1つである。ICPでは、
 図\ref{slam:icp1}に示す。ように繰り返し計算に基づいて、段階的に位置姿勢を調整する。
@@ -926,19 +926,19 @@ PLICPの処理は、ICPと同じである。違いは、ICPが最近傍点を見
 \begin{figure}[h]
   \begin{center}
     \includegraphics[width=.8\linewidth]{img/slam_26.jpg}
-    \caption{PLICP}
+    \caption{PLICP\cite{slam:plicp}}
     \label{slam:plicp}
   \end{center}
 \end{figure}
 
 図\ref{slam:plicp_p1p2}にPLICPによるP1とP2の位置関係を示す。
-青い点は$t-1$時間のレーザ点、茶色の線はt(壁など)、赤い点は時点実際のオブジェクト図中の同心円の実践は点間の距離誤差を表す。点P1を知るある点からの距離Dによって別の点P2の位置が決まる。P2の位置は、P1を中心とし、
+青い点は$t-1$時間のレーザ点、茶色の線(壁など)、赤い点は時点実際のオブジェクト図中の同心円の実践は点間の距離誤差を表す。点P1を知るある点からの距離Dによって別の点P2の位置が決まる。P2の位置は、P1を中心とし、
 Dを半径とする円上にある。
 
 \begin{figure}[h]
   \begin{center}
     \includegraphics[width=.3\linewidth]{img/slam_27.jpg}
-    \caption{PLICPによるP1とP2の位置関係}
+    \caption{PLICPによるP1とP2の位置関係\cite{slam:china}}
     \label{slam:plicp_p1p2}
   \end{center}
 \end{figure}

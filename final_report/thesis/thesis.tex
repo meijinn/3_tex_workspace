@@ -22,6 +22,7 @@
 \usepackage{siunitx}
 \usepackage{array}
 \usepackage{multirow}
+\usepackage[figure,table]{totalcount} 
 %---------------------------------------------------
 \definecolor{bl}{rgb}{0.94,0.97,1}
 \definecolor{gr}{rgb}{0.5,0.5,0.5}
@@ -114,6 +115,18 @@
 \pagenumbering{roman}
 \tableofcontents
 \end{spacing}
+
+% 図がある場合のみ図目次を作成
+\iftotalfigures
+  \addcontentsline{toc}{chapter}{\listfigurename}  % 目次に図目次を追加
+  \listoffigures  % 図目次を表示
+\fi
+% 表がある場合のみ表目次を作成
+\iftotaltables
+  \addcontentsline{toc}{chapter}{\listtablename}  % 目次に表目次を追加
+  \listoftables  % 表目次を表示
+\fi
+
 \newpage
 \clearpage
 \pagenumbering{arabic}
@@ -132,55 +145,82 @@
 \pagestyle{plain}
 \chapter*{謝辞}
 
+本論文は、筆者が明石工業高等専門学校専攻科機械・電子システム工学専攻在学中に
+野村研究室において野村隼人先生のご指導の下で執筆した専攻科特別研究論文です。
+
+指導教員の野村先生には、研究の方針の相談、論文や発表資料のまとめ方を教えて頂きありがとうございます。
+
+また、機械工学科関森先生には、専攻科2年次のメカトロシステムの授業をきっかけに、
+移動ロボットの運動学の幾何学について、開発のための技術的なアドバイスを頂きました。
+私が作ったROSの環境を関森先生も試したいと言って頂いた際は、研究に取り組んでいてとても有意義に感じました。
+
 私の研究のモチベーションは、中之島ロボットチャレンジを観戦することで、
 将来的に自律移動ロボットやLiDARの開発に携わりたいと考えたことです。
-今回は、縁あって北陽電機株式会社様よりLiDARを貸与頂き、
-自らの開発アイデアを研究活動で実現することができました。
+今回は、縁あって北陽電機株式会社様よりLiDARを貸与頂き、自らの開発アイデアを研究活動で実現することができました。
 本研究は、LiDARの使用技術の勉強並びに、北陽電機株式会社様への就職を目的として取り組みました。
 北陽電機株式会社R\&D室 嶋地様、和田様、木元様、岡本様には大変お世話になりました。
-北陽電機株式会社様への報告を以て、専攻科の研究を総括とさせて頂きます。
+この報告を以て、私の専攻科の研究活動の総括とさせて頂きます。
 
-\appendix
-\chapter{付録があるときは}
-プログラム文とかを書いてページ数を稼ぎたいときは，
-以下のようにしてみます。
+% \appendix
+% \chapter{付録があるときは}
+% プログラム文とかを書いてページ数を稼ぎたいときは，
+% 以下のようにしてみます。
 
-\begin{verbatim}
-#include <iostream>
-using namespace std;
-int main() {
-for(int i = 1; i <= 5; i++) {
-cout << "こんにちは, C++ の世界! " << i << endl;
-}
-return 0;
-}
-\end{verbatim}
-\verb|\usepackage{ascmac}|して\verb|screen| 環境を使うと，枠がつきます。
-\begin{screen}
-\begin{verbatim}
-#include <iostream>
-using namespace std;
-int main() {
-for(int i = 1; i <= 5; i++) {
-cout << "こんにちは, C++ の世界! " << i << endl;
-}
-return 0;
-}
-\end{verbatim}
-\end{screen}
+% \begin{verbatim}
+% #include <iostream>
+% using namespace std;
+% int main() {
+% for(int i = 1; i <= 5; i++) {
+% cout << "こんにちは, C++ の世界! " << i << endl;
+% }
+% return 0;
+% }
+% \end{verbatim}
+% \verb|\usepackage{ascmac}|して\verb|screen| 環境を使うと，枠がつきます。
+% \begin{screen}
+% \begin{verbatim}
+% #include <iostream>
+% using namespace std;
+% int main() {
+% for(int i = 1; i <= 5; i++) {
+% cout << "こんにちは, C++ の世界! " << i << endl;
+% }
+% return 0;
+% }
+% \end{verbatim}
+% \end{screen}
 
 \begin{thebibliography}{99}
   \bibitem{taikan:asada} 淺田樹生, 藤本雄一郎, 澤邊太志, 神原誠之と加藤博一, 「自動車運転者の適切な速度制御を促す拡張現実感」, 研究報告コンピュータビジョンとイメージメディア（CVIM）, vol. 2023-CVIM-232, no. 13, pp. 1-6, 1月 2023.
-  \bibitem{taikan:ohmae} 大前学, 「自動車の遠隔操縦における視覚情報の運転への影響評価と影響補償の為の車両制御の開発」, 科学研究費補助金研究成果報告書, 2010, 参照: 2023年3月26日. [Online]. Available at: https://koara.lib.keio.ac.jp/xoonips
-  \bibitem{taikan:speedmanagement} speed management. [Online]. Available at: https://www.itf-oecd.org/sites/default/files/docs/06speed.pdf
+  \bibitem{taikan:ohmae} 大前学, 「自動車の遠隔操縦における視覚情報の運転への影響評価と影響補償の為の車両制御の開発」, 科学研究費補助金研究成果報告書, 2010, 参照: 2023年3月26日. [Online]. Available at: \verb|https://koara.lib.keio.ac.jp/xoonips|
+  \bibitem{taikan:speedmanagement} speed management, European Conference of Ministers of Transport.
   \bibitem{taikan:higashii} 東井隼斗, 北原格, 亀田能成と大田友一, 「ドライバの体感速度変化を促すバーチャルパターン」, 電子情報通信学会論文誌 D, vol. J99-D, no. 1, pp. 45-55, Jan 2016.
   \bibitem{taikan:gitelman} V. Gitelman, F. Pesahov, R. Carmel, 「Speed perception by drivers as dependent on urban street design; a case-study」, Transactions on Transport Sciences, vol. 11, pp. 5-18, Sep 2020.
   \bibitem{taikan:jo}D. Jo, S. Lee, Y. Lee, 「The Effect of Driving Speed on Driver's Visual Attention: Experimental Investigation」, Engineering Psychology and Cognitive Ergonomics, D. Harris, Lecture Notes in Computer Science. Cham: Springer International Publishing, 2014, pp. 174-182.
+  \bibitem{slam:nyumon}友納正裕, SLAM入門. オーム社, 2018年3月8日.
   \bibitem{slam:gmapping}G. Grisetti, C. Stachniss, W. Burgard,  Improved Techniques for Grid Mapping With Rao-Blackwellized Particle Filters, IEEE Transactions on Robotics, vol. 23, no. 1, pp. 34-46, Feb 2007.
   \bibitem{slam:cartographer}W. Hess, D. Kohler, H. Rapp, D. Andor, Real-time loop closure in 2D LIDAR SLAM, 2016 IEEE International Conference on Robotics and Automation (ICRA), Stockholm, Sweden: IEEE, Mar 2016, pp. 1271-1278.
   \bibitem{slam:masuda}増田健, 「ICPアルゴリズム」, 研究報告コンピュータビジョンとイメージメディア（CVIM）, vol. 2009-CVIM-168, no. 23, pp. 1-8, Aug 2009.
   \bibitem{slam:icp}S. Rusinkiewicz, M. Levoy, 「Efficient variants of the ICP algorithm」, Proceedings Third International Conference on 3-D Digital Imaging and Modeling, Mar 2001, pp. 145-152.
   \bibitem{slam:china}点云配准方法 PLICP CSDN博客. 参照: 2023年12月27日. [Online]. Available at: \verb|https://blog.csdn.net/weixin_40863346/article/details/102731212|
+  \bibitem{slam:plicp}C. Andrea, 「An ICP variant using a point-to-line metric」, 2008 IEEE International Conference on Robotics and Automation, May, 2008, pp. 19–25.
+  \bibitem{slam:comp1}P. S. Laksono, T. M. Kusuma, 「PERFORMANCE ANALYSIS OF HECTOR SLAM AND GMAPPING FOR MOBILE ROBOT NAVIGATION」, Jurnal Ilmiah Teknologi dan Rekayasa, vol. 27, no. 2, Art. no. 2, Oct 2022.
+  \bibitem{slam:grandtruth}R. Yagfarov, M. Ivanou, I. Afanasyev, 「Map Comparison of Lidar-based 2D SLAM Algorithms Using Precise Ground Truth」, Nov, 2018.
+  \bibitem{slam:urg}「urg\_node - ROS Wiki」. 参照: 2023年12月28日. [Online]. Available at: \verb|https://wiki.ros.org/urg_node|
+  \bibitem{slam:tf}「ja/tf - ROS Wiki」. 参照: 2023年12月28日. [Online]. Available at: \verb|https://wiki.ros.org/ja/tf|
+  \bibitem{slam:laser}「laser\_scan\_matcher - ROS Wiki」. 参照: 2023年12月28日. [Online]. Available at: \verb|https://wiki.ros.org/laser_scan_matcher|
+  \bibitem{auto:tsukuba}「つくばチャレンジ概要 | つくばチャレンジ2023」. 参照: 2024年1月2日. [Online]. Available at: \verb|https://tsukubachallenge.jp/2023/about/overview|
+  \bibitem{auto:tomonoh}友納正裕, 吉田智章, 入江清と小柳栄次, 「つくばチャレンジにおける屋外ナビゲーションシステムの問題分析と基本設計」, 日本ロボット学会誌, vol. 30, no. 3, pp. 262–270, 2012.
+  \bibitem{auto:nakanoshima}「Nakanoshima Robot Challenge」, Nakanoshima Robot Challenge. 参照: 2024年1月2日. [Online]. Available at: \verb|https://www.nakanoshima-rc.jp/index.html|
+  \bibitem{auto:comp}C. Francisco, Varandas de Sousa, 「Autonomous Driving Of Competition Robot」, Universidade Técnica de Lisboa, Lisboa, Oct, 2018.
+  \bibitem{auto:design}浦瀬裕基, 奥出直人, 「Driverless Carのデザインと実装 : 南伊勢町における実証実験を通して」. 参照: 2023年12月20日. [Online]. Available at: \verb|https://koara.lib.keio.ac.jp/xoonips|
+  \bibitem{auto:ROS}銭飛, ROSプログラミング, p1-p17, 第1版. 森北出版株式会社, 2016.
+  \bibitem{auto:navstack}「NavigationStack - Navigation Stack概要」. 参照: 2023年12月30日. [Online]. Available at: \verb|https://robo-marc.github.io/navigation_documents/navigation_overview.html|
+  \bibitem{auto:teb1}tomofumi.yamada, 「Fixstars Techブログ teb\_local\_planner のアルゴリズムとパラメータについての解説」, Fixstars Tech Blog /proc/cpuinfo. 参照: 2024年1月2日. [Online]. Available at: \verb|https://proc-cpuinfo.fixstars.com/2023/04/teb-local-planner-introduction/|
+  \bibitem{auto:teb2}C. Rosmann, W. Feiten, T. Wosch, F. Hoffmann, T. Bertram, 「Efficient trajectory optimization using a sparse model」, 2013 European Conference on Mobile Robots, Barcelona, Catalonia, Spain: IEEE, Sep 2013, pp. 138-143.
+  \bibitem{auto:teb3}C. Rosmann, F. Hoffmann, T. Bertram, 「Planning of multiple robot trajectories in distinctive topologies」, 2015 European Conference on Mobile Robots (ECMR), Lincoln, United Kingdom: IEEE, Sep 2015, pp. 1-6.
+  \bibitem{auto:teb:ackermann}「teb\_local\_planner/Tutorials/Planning for car-like robots - ROS Wiki」. 参照: 2024年1月2日. [Online]. Available at: \verb|https://wiki.ros.org/teb_local_planner/Tutorials/Planning%20for%20car-like%20robots|
+  \bibitem{auto:costmap2d}「NavigationStack - costmap\_2d」. 参照: 2024年1月2日. [Online]. Available at: \verb|https://robo-marc.github.io/navigation_documents/costmap_2d.html|
 \end{thebibliography}
   
 \end{document}
